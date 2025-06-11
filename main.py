@@ -430,6 +430,11 @@ def handle_question(request: FeedbackRequest):
 @app.post("/start_session")
 def start_session():
     welcome = (
+        "🔥 Welcome to Song Audit 🔥\n"
+        "Let’s create some magic. Drop your lyrics or start a new Suno/Udio prompt.\n"
+        "If you ever want to know what I can do, just say: 'what can you do?' 🔧"
+    )
+    return {"welcome_message": welcome}
 # INTERPOLATION & SONG FLIP ASSISTANT MODULE
 
 @app.post("/interpolation_flip")
