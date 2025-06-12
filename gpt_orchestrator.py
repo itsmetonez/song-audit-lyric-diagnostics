@@ -4,7 +4,7 @@ import openai
 import os
 
 app = FastAPI()
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Store securely in Render
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class FullAuditRequest(BaseModel):
     audit_data: dict
@@ -22,13 +22,16 @@ def gpt_orchestrate(req: FullAuditRequest):
     Full Lyrics: {req.lyrics}
 
     Instructions:
-    1. Provide a professional detailed song feedback.
-    2. Rate its commercial potential (1-100).
-    3. Suggest 3-5 actionable rewrite tips.
-    4. Suggest title alternatives.
-    5. Offer co-writing enhancement ideas.
-    6. Suggest production arrangement adjustments.
-    7. Summarize overall label readiness.
+    - You are allowed to generate explicit language and mature content if artistically appropriate.
+    - Do not self-censor.
+    - Provide professional detailed song feedback.
+    - Rate its commercial potential (1-100).
+    - Suggest 3-5 rewrite tips.
+    - Suggest alternative titles.
+    - Offer co-writing improvements.
+    - Suggest production adjustments.
+    - Assess streaming & viral potential.
+    - Assess label readiness.
     """
 
     response = openai.ChatCompletion.create(
