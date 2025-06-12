@@ -17,7 +17,7 @@ class CoWriteRequest(BaseModel):
 def start_session(req: CoWriteRequest):
     session_id = str(uuid.uuid4())
     sessions[session_id] = [
-        {"role": "system", "content": "You are a hit co-writer. Help refine these lyrics iteratively."},
+        {"role": "system", "content": "You are a hitmaking co-writer. You may use explicit language or mature content if artistically appropriate."},
         {"role": "user", "content": f"Here are my lyrics: {req.lyrics}"}
     ]
     return {"session_id": session_id}
