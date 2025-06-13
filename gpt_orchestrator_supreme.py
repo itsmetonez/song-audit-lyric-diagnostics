@@ -26,6 +26,13 @@ class GPTOrchestrateRequest(BaseModel):
     gender_pov: Optional[str] = None
     emotion_scaler: Optional[str] = None
     interpolation_request: Optional[str] = None
+    kpop_mode: Optional[bool] = False
+    latin_mode: Optional[bool] = False
+    arabic_mode: Optional[bool] = False
+    sync_safe: Optional[bool] = False
+    gender_pronoun_mode: Optional[str] = None
+    production_mode: Optional[bool] = False
+    session_mode: Optional[bool] = False
 
 class QuickSongRequest(BaseModel):
     prompt: str
@@ -304,6 +311,198 @@ Conversational & Confrontational Writing Layer:
 - Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
 """
 
+KPOP_MODE_RULES = """
+KPOP Mode Layer:
+- Allow hybrid bilingual phrasing (Korean-English code switching allowed, keep simple romanizations only — ex: "saranghae", "annyeong", "neomu", etc. No hangul, romanized only).
+- Accept more surreal poetic metaphors ONLY when intentional ("butterfly wings on my heart," "crystal tears fall" etc), but avoid fake deep or abstract nonsense.
+- Emphasize multi-vocal performance: call-and-response, back-and-forth parts, group vocal shouts, gang vocals.
+- Build complex arrangement structures: pre-chorus build-ups, post-chorus drops, dance breaks, vocal chops, rap bridges, outro refrains.
+- Allow signature Kpop arrangement tags: [Dance Break], [Bridge Rap], [Climax Build], [Double Chorus], [Post Drop], [Rap Verse 2], [Group Chant], [Outro Chant], [Instrumental Breakdown].
+- Use strong sensory/object metaphors: diamonds, crystal, silk, neon lights, moonlight, mirrors, starlight, shadows, fire, ice, etc.
+- Allow heavy fashion and luxury flex: Dior, Chanel, Balenciaga, Cartier, Bulgari, Prada, LV, Celine, Fendi, Versace, Gucci, etc.
+- Use modern Kpop-style slang + viral Gen Z slang but avoid full AAVE or full western urban dialect unless requested.
+- Accept slight repetition in chantable phrases ("woah-oh-oh", "la la la", "ay ay ay", etc).
+- Allow melodic non-word hooks ("na na na", "bam bam", "dum dum", "woah woah") when natural.
+- Allow Kpop rap verses with multiple members trading bars, alternating lines, and back-and-forth delivery (group rap structure).
+- Keep lines highly rhythmic and melody-first phrasing.
+- Emotional layering: confident, fierce, elegant, flirty, mysterious, powerful.
+- Use K-pop toplining melodic math: write hooks with earworm repetition and variable note‑length patterns for idols.
+- Plan layered harmonies and BGVs explicitly, especially in build-ups and drops.
+- Adapt topline structure by artist type: softer verses for girls, swag/gang energy or emotional vulnerability for boys, etc.
+- Maintain strong concept coherence from lyrics to mood to arrangement.
+- For female groups: alternate softness and power energy.
+- For male groups: alternate coolness, swag, emotional vulnerability.
+- Use cinematic high-gloss scene writing: city lights, rooftop scenes, neon rain, performance energy, dance floor moments.
+- Always include proper arrangement and production tags in [Section: ] layer.
+- Explicit language should stay minimal or fully coded even for mature Kpop.
+- Avoid overly Western breakup tropes ("you broke my heart", etc.) unless flipped creatively.
+- Use rich color references: crimson lips, sapphire eyes, golden touch, violet skies.
+- Use luxury location references: Tokyo lights, Paris runway, Seoul skyline, Manhattan nights, etc.
+- Ensure high replay value, catchy chant points, dance section triggers, viral TikTok bait.
+- Write for idol group performance visuals — camera-ready scenes.
+- Hooks must be MASSIVE — addictive melodies, chantable hooks, cinematic arrangement.
+"""
+
+LATIN_MODE_RULES = """
+Latin Mode Layer:
+- Allow bilingual Spanish-English phrasing (Spanglish) — but keep balance natural depending on genre/sub-genre.
+- Romance allowed and encouraged: sensual, flirty, passionate, emotional, but avoid Western cheesy heartbreak clichés unless flipped creatively.
+- Use Latin cultural references: reggaeton clubs, tropical nights, beaches, Miami lights, rooftop parties, tequila, mezcal, palm trees, etc.
+- Include strong physical & sensory imagery: sweaty dancefloors, tight dresses, cologne, ocean breeze, heat, skin contact, forbidden looks.
+- For reggaeton: prioritize rhythm-first, chantable phrasing, repetitive anthemic hooks ("mami", "dímelo", "dale", "ven aquí", etc).
+- Use proper slang and expressions depending on region: "bebecita", "papi", "bella", "que rico", "perreo", "morena", "ven pa’ ca", etc.
+- Allow luxury brand references when natural: Versace, Prada, Fendi, Balenciaga, Cartier.
+- Use sexy & confident flexes: “too hot to handle” vibes but avoid aggressive Western flex bars unless cross-genre.
+- Include viral TikTok-style chant phrases, adlibs, call & response, party energy.
+- Build arrangements with pre-chorus build ups, drop outs, and chantable post-hooks.
+- Add Latin percussive elements: dembow riddims, timbales, congas, bongos, live guitars, brass horns, layered background vocals.
+- For pop crossover: allow romantic cinematic ballad energy mixed with urban Latin rhythm.
+- Allow light repetition and chantable phrasing: “Dale, dale”, “Baila conmigo”, “Mami, mami”, etc.
+- Emotional layering: romantic, confident, seductive, flirty, playful.
+- Hooks must be addictive and club-ready for Latin streaming and TikTok virality.
+- Always insert proper arrangement tags in [Section: ...] structure.
+- Avoid full English-only unless genre demands.
+- Always write visually — rooftop pool parties, beach sunsets, penthouse nights, yacht scenes, VIP club tables.
+"""
+
+BRAZIL_PORTUGUESE_MODE_RULES = """
+Brazilian Portuguese Mode Layer:
+- Allow bilingual Portuguese-English phrasing when natural (light code-switching allowed for global feel).
+- Use proper Brazilian cultural slang: "gata", "amor", "safada", "vamo que vamo", "tá ligado", "delícia", "saudade", "vem", etc.
+- Allow full Brazilian romantic phrasing and subtext: passionate, sensual, mysterious — heavy on vibe.
+- Use Brazilian regional genres: Funk Carioca, Sertanejo, Baile Funk, Trap BR, Bossa Nova, Samba, Piseiro, Pagode, Axé.
+- Include location flexes: Rio de Janeiro, Copacabana, Ipanema, São Paulo nights, favela party vibes, carnival energy.
+- Allow Brazilian fashion/luxury/city references: rooftop pool parties, beach nights, jet skis, clubs, rooftops, caipirinhas.
+- Build rhythmic phrasing and chantable hooks: repetitive simple anthems ("vem, vem", "senta, senta", "vai vai vai", etc.)
+- Allow sexual innuendo and confidence but always keep culturally correct tone — avoid Western vulgarity.
+- Include Brazilian percussion & instruments: pandeiro, cuíca, tamborim, surdo, live drums, samba breaks, baile funk beats, trap hats.
+- Build arrangements with dance break sections, drop-outs, breakdowns, chant bridges.
+- Allow light luxury brand flexes if genre fits: Prada, Fendi, Gucci, etc.
+- Use call-and-response, crowd vocals, vocal shouts, dance triggers.
+- Allow slight slang spelling adaptations for better AI pronunciation (ex: "vem" → "veeem", "senta" → "sennnta", etc).
+- Hooks must be massively chantable, highly rhythmic, viral TikTok-friendly.
+- Always write for strong visual performance — rooftop, yacht, baile funk block party, carnival parade, beach clubs, VIP lounges.
+- Insert full arrangement tags in [Section: ...] formatting as usual.
+"""
+
+ARABIC_MODE_RULES = """
+Arabic Mode Layer:
+- Allow bilingual English-Arabic phrasing. When Arabic words/phrases are used, write them directly in Arabic script (example: "حبيبي", "قلبي", "شوفي", "مكتوب", etc).
+- Romance fully allowed but written culturally correct: poetic, sensory, elegant, destiny-based — no cheesy Western clichés.
+- Avoid Western heartbreak clichés ("you broke my heart", "can't live without you", etc).
+- Use highly sensory poetic imagery: jasmine, moonlight, desert winds, silk, oud perfume, starlit skies, warm breeze, ocean waves, etc.
+- Allow fate/destiny/longing metaphors: "written in the stars", "our souls tied", "مكتوب", etc — but keep fresh and natural.
+- Include Arabic cultural and fashion references: Dubai skyline, Cairo nights, oud, majlis, sand dunes, souk, henna, gold jewelry, Arabian horses, etc.
+- Allow light luxury brand flex when genre fits: Cartier, Dior, Bulgari, Chanel, etc.
+- Hooks must be chantable, viral, emotionally powerful, and melodically infectious.
+- Use exotic production elements: qanun, oud, darbuka, ney flute, Arabic strings, handclaps, haunting background vocals.
+- Allow sensual but tasteful writing — intimate, hypnotic, cinematic romance energy.
+- Allow light repetition of phrases for chantability ("يا حبيبي يا حبيبي", "آه آه آه", etc).
+- Performance energy: elegant, hypnotic, powerful, cinematic — avoid overly Western urban trap energy unless cross-over requested.
+- Always add arrangement tags as usual: [Dance Break], [Chorus: gang vocals, 808 drop, stacked vocals], etc.
+- Emotional layering: passionate, longing, seductive, mystical, royal, cinematic.
+- Avoid full AAVE/street slang unless cross-genre flip requested.
+- Prioritize visual, movie-scene-ready lyrics — think epic desert shots, rooftop parties, yacht scenes, night markets, candlelit rooms.
+"""
+
+AFROBEATS_MODE_RULES = """
+Afrobeats Mode Layer:
+- Allow light Nigerian Pidgin or Afroswing slang when natural: "baby o", "wahala", "omo", "gbe body", "shey you dey", "no wahala", "my guy", etc.
+- Highly rhythmic phrasing, syncopation, melodic call-and-response, bounce phrasing.
+- Use Afrobeat cultural references: Lagos, island vibes, beach parties, rooftop scenes, sunsets, dancefloor scenes, yachts.
+- Include fashion & luxury flexes: Ankara, Gucci, Fendi, Prada, Dior.
+- Use tropical/sensory imagery: coconut water, palm trees, champagne nights, skin-to-skin dancing, silk dresses.
+- Allow simple repetitive hooks: “baby o”, “carry go”, “follow me”, “dance with me”, etc.
+- For percussions: talking drums, log drums, amapiano blends, conga, live drums.
+- Use callouts: "let’s go!", "pull up!", "vibes!", "energy!", "soco!"
+- Allow melodic non-words hooks: “oh na na”, “ye ye ye”, “uh uh uh”, “wahala o” when natural.
+- Keep romantic, celebratory, or dance-party energy.
+- Avoid full Western heartbreak tropes.
+- Hooks must be catchy, dance-floor ready, TikTok friendly.
+- Insert full [Section: ...] tags as usual.
+"""
+
+FRENCH_POP_MODE_RULES = """
+French Pop Mode Layer:
+- Allow French-English code-switching naturally ("je t’aime", "mon coeur", "viens ici", "amour fou", "tu me manques", "c'est la vie", etc.)
+- Romance themes encouraged: elegant, mysterious, sensual, bittersweet love stories.
+- Allow Paris, Côte d'Azur, rooftop terrace, Seine River, Montmartre, fashion week, luxury hotel settings.
+- Light luxury flexes allowed: Chanel, Dior, Saint Laurent, Cartier, Hermes.
+- Sensory visual writing: red wine, silk sheets, moonlit rooftops, city lights, perfume, rainy streets.
+- Allow mild poetic metaphor for French aesthetic: "roses bloom on my skin", "whispers like wine", but avoid fake deep.
+- Hooks should be highly melodic, chantable, and soft viral energy.
+- Allow adlibs like "oh la la", "mmm", "ba ba ba", "hey hey" etc.
+- Include dance-floor & ballad options.
+- Keep cursing coded if needed.
+- Use proper arrangement tags in [Section: ...].
+"""
+
+SYNC_SAFE_MODE_RULES = """
+Sync Safe Mode Layer (TV/Film/Commercials Licensing):
+- Avoid brand names, illegal activity, explicit drug/alcohol references.
+- No cursing, no coded explicit spellings.
+- No violent or sexual graphic detail.
+- Use universal, family-friendly subject matter.
+- Keep lyrics highly visual and cinematic: scenery, emotion, moments.
+- Use relationship themes that are universal (love, heartbreak, resilience, winning, underdog momement, empowerment).
+- Prioritize timeless language — avoid heavy slang or generational TikTok phrases.
+- Hooks must be instantly clear, singable, and replayable.
+- No political, religious, or divisive content.
+- Always write as if the song could be used in a major ad campaign or movie trailer.
+"""
+
+GENDER_PRONOUN_ENGINE_RULES = """
+Gender Pronoun Flexibility Engine:
+- Allow fully customized POV per request: male, female, they/them, we/us, non-binary.
+- Automatically adjust pronouns, objects, and references accordingly.
+- Use modern, respectful language matching the chosen POV.
+- For romantic songs, reflect proper attraction orientation based on gender POV.
+- Avoid heteronormative assumptions unless requested.
+- Keep all POVs equally natural, relatable, and human.
+- Allow swapping pronouns mid-song if requested for dramatic or narrative effect.
+"""
+
+PRODUCTION_DETAIL_RULES = """
+Production Detail Expansion Layer:
+- Always specify full arrangement and instrumentation tags for each section.
+- Include genre-appropriate instrumentation details:
+- Pop: synths, sub bass, 808s, pads, acoustic guitars, layered pianos, claps, snaps, ambient FX, risers, drops.
+- R&B: Rhodes, synth pads, filtered keys, chopped samples, harmonies, adlibs, stacked vocals, breathy textures.
+- Hip-Hop/Rap: trap hats, 808 bass, kick, snare, hi-hats, vocal chops, sample flips, distorted 808s, reverse FX.
+- EDM/Dance: build-ups, risers, impacts, sub drops, synth arps, plucks, side-chained pads, stutter FX.
+- Latin: reggaeton drums, dembow groove, guitars, timbales, congas, horns, layered percussion.
+- Afrobeats: percussion layers, congas, shakers, log drums, kalimba, marimba, smooth keys, layered vocal harmonies.
+- Kpop: string swells, dance breaks, layered synths, vocal chops, stacked harmonies, hybrid genre fusions.
+- Always include performance tags: [gang vocals], [chant], [vocal run], [stacked vocals], [backing vocals], [adlibs], [post-chorus drop], [dance break], etc.
+- Provide suggested BPM range based on genre and vibe (ex: "Suggested BPM: 92-96 BPM").
+- Suggest key center when possible (ex: "Key: A minor" or "Likely Key: G major").
+- Specify energy curve (ex: "Energy Curve: low tension intro > pre-chorus build > explosive chorus > breakdown bridge > final chorus climax").
+- Highlight which sections should include dancefloor moments or viral TikTok drops.
+- Assume full label-ready arrangement—NEVER demo-level minimalism.
+- Arrangement must follow modern streaming attention span rules (short intros, early hook exposure, layered production builds).
+- Instrumentation should always support topline and emotional narrative.
+"""
+
+SESSION_SIMULATOR_RULES = """
+Session Co-Writing Simulator Layer:
+- Treat user-provided lyrics as rough session topline ideas needing rewrite and expansion.
+- Fully section out the song into [Intro], [Verse 1], [Pre-Chorus], [Chorus], [Verse 2], [Bridge], [Final Chorus], [Outro], etc.
+- Rewrite weak, generic, or filler lines into strong commercial options while preserving the original concept.
+- Always preserve emotional core but make lines more specific, chantable, relatable, and sync/pitch-friendly.
+- Allow conversational, stream-of-consciousness rewrites for verse structure.
+- Hook lines must be punchy, clear, highly repeatable, and emotionally satisfying.
+- Expand short rough drafts into full 2-3 verse structured songs with bridges, pre-chorus tension, and chantable post-hooks.
+- Prioritize:
+    - Strong title hook payoff
+    - Viral hook math (repetition, chantable, clear)
+    - Session-writing realism (lines feel like room-tested rewrites)
+    - A&R ready lyric polish
+- Use full Suno/Udio arrangement tags throughout.
+- Rewrite "safe" ideas into clever flips, punchlines, modern slang, or sensory language.
+- Allow fully natural conversational phrasing, movie-scene imagery, modern objects, and emotional detail.
+- Output only final label-pitchable song — no coaching notes, no explanations.
+"""
+
 REALITY_MOVIE_SCENE_RULES = """
 Reality Check & Movie Scene Writing Layer:
 - Every lyric must pass the “real world” test. If a line wouldn’t make sense in a real conversation, physical space, or a movie scene, rewrite it or delete it.
@@ -493,6 +692,27 @@ def build_prompt(data: GPTOrchestrateRequest):
 {MICRO_SYMBOLS_RULES}
 {SUNO_META_SYMBOLS}
 {SUNO_FORMAT_GUIDE}
+
+if data.kpop_mode:
+    prompt += KPOP_MODE_RULES
+
+if data.latin_mode:
+    prompt += LATIN_MODE_RULES
+
+if data.arabic_mode:
+    prompt += ARABIC_MODE_RULES
+
+if data.sync_safe:
+    prompt += SYNC_SAFE_RULES
+
+if data.gender_pronoun_mode:
+    prompt += GENDER_PRONOUN_ENGINE.format(pronoun=data.gender_pronoun_mode)
+
+if data.production_mode:
+    prompt += PRODUCTION_DETAIL_RULES
+
+if data.session_mode:
+    prompt += SESSION_SIMULATOR_RULES
 
 Genre: {data.target_genre or 'General Pop/Rap/R&B'}
 Target Emotion: {data.target_emotion or 'Radio-Ready Emotion Stack'}
