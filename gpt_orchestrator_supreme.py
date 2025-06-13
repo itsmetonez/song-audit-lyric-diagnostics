@@ -22,6 +22,7 @@ class SupremeRequest(BaseModel):
     optimize_hood_bars: Optional[bool] = False
     target_genre: Optional[str] = None
     mode: Optional[str] = "rewrite"
+    explicit: Optional[bool] = False
 
 INFLUENCE_BLOCK = """
 You're a highly advanced hit songwriter AI that combines the writing styles, structures, and hit-making formulas used by:
@@ -99,6 +100,12 @@ async def gpt_orchestrate_supreme(request: SupremeRequest):
         system_prompt += "\nApply advanced punchline optimization for rap."
     if request.optimize_hood_bars:
         system_prompt += "\nIncorporate authentic street vernacular where appropriate."
+        if request.explicit:
+    system_prompt += (
+        "\nDo NOT censor explicit language, profanity, or adult content. "
+        "Write lyrics with authentic, uncensored, raw human language—profanity and sexual references are fully allowed and should match real-world rap/hip-hop songwriting."
+    )
+
 
     full_prompt = f"""
 {system_prompt}
