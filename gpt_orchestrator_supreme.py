@@ -33,6 +33,7 @@ class GPTOrchestrateRequest(BaseModel):
     gender_pronoun_mode: Optional[str] = None
     production_mode: Optional[bool] = False
     session_mode: Optional[bool] = False
+    locked_lines: Optional[list[str]] = None
 
 class QuickSongRequest(BaseModel):
     prompt: str
@@ -313,6 +314,95 @@ Conversational & Confrontational Writing Layer:
 - Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
 """
 
+EMOTION_RECIPE_ENGINE = """
+Advanced Emotion Recipe Engine Layer:
+- Dynamically blend layered, stacked emotional profiles into every section.
+- Use complex modern emotional mashups to avoid generic one-note feelings.
+- Supported Emotional Stacks (auto-combine where natural):
+    - Heartbreak + Petty Flex + Savage Confidence
+    - Lust + Emotional Vulnerability + Forbidden Desire
+    - Bittersweet + Melancholy + Yearning + Reflection
+    - Toxic Romance + Self Empowerment + Dark Humor
+    - Revenge + Emotional Detachment + Passive Aggression
+    - Therapy Confession + Anxious Overthinking + Self-Destructive Patterns
+    - Late Night Drunk Text + Regret + "I Don’t Care" Defense Mechanism
+    - Romantic Fantasy + Delusional Hope + Sarcastic Denial
+    - Savage Club Energy + Inner Emotional Conflict + Vulnerability Hiding
+    - Fame + Anxiety + Isolation + Validation Seeking
+    - Summer Fling + Temporary High + Inevitable Collapse
+    - Long Distance + Trust Issues + Digital Obsession
+    - Gaslighting + Obsession + Fake Closure
+
+- Write lyrics that reflect *how people actually behave emotionally* — messy, layered, conflicted.
+- Use highly specific modern behaviors & situations to signal the emotional layers:
+    - drunk FaceTime calls
+    - scrolling old voice notes at 2AM
+    - watching IG stories anonymously
+    - deleting text threads and regretting it
+    - double texting then ghosting
+    - stalking Venmo payments
+    - saving or deleting old photos
+    - re-reading old arguments
+    - DM unsent messages
+    - fake moving on energy on social
+    - playing their song on repeat late night
+
+- Subtext over surface: 
+    - Don’t state emotions directly ("I’m sad") — show it through action, environment, or behavior.
+    - Use body language, micro-details, setting and real world triggers.
+
+- Always use conversational tone — fully natural phrasing like real arguments, text messages, or private conversations.
+- Allow savage, raw, messy, vulnerable, toxic, flirty, or insecure writing depending on the emotional cocktail.
+- Use modern cultural references where appropriate: memes, viral slang, Gen Z talk, trending behaviors.
+- Avoid ANY Hallmark, meme-caption, or therapy-session phrasing — make it cutting and real.
+- Ensure that every hook, verse, and bridge reflects the stacked emotions across the entire record.
+- Arrangement and delivery should follow emotional energy swings: vulnerable pre-chorus, explosive chorus, cathartic bridge, detached outro.
+"""
+
+CHORUS_VARIATION_ENGINE = """
+Multi-Option Chorus/Hook Variation Engine:
+
+- For every chorus generation, create 2 to 3 fully different hook options.
+- Each option should represent different emotional or phrasing angles while staying true to the original song topic.
+- Ensure strong hook math, streaming-era virality, and emotional payoff across all options.
+
+Hook Style 1 — Direct Statement Hook:
+- Highly conversational.
+- Directly addresses the subject (ex: "You think I care? You wish.")
+- Feels like a text message, argument, or savage one-liner.
+
+Hook Style 2 — Visual Metaphor Hook:
+- Uses strong sensory or cinematic imagery.
+- Paints a scene ("Your name still flashing on my screen like sirens").
+- Highly visual and actable for music video scenes.
+
+Hook Style 3 — Chantable Anthem Hook:
+- Built for group vocals, viral repetition, and live show moments.
+- Simpler, bouncier, chantable structure.
+- Ex: "Run it up, run it up, I’m gone now / Run it up, run it up, too strong now"
+
+Hook Style 4 — Vulnerable Contrast Hook (optional if fitting):
+- Emotional drop-off / confessional vibe.
+- Shows the "soft underbelly" behind the flex.
+- ("If I’m so unbothered, why I still check your page?")
+
+Variation Rules:
+- DO NOT reuse phrasing or lines between options.
+- Each variation must feel like a totally valid top-line option a real artist or label would pick between.
+- Language, slang, melody shape, and cadence can vary between versions.
+- Maintain streaming-first hook math for all options (short phrases, big payoff, instant catchiness).
+- Let vibe mode, emotion stack, genre, gender POV, and interpolation request inform the variations.
+- Use all other active engines (hit rules, A&R filters, reality scene rules, vocal layering, arrangement rules) for every variation.
+- Always return each variation clearly marked: 
+
+Example Output:
+[Chorus Option 1: ...]
+[Chorus Option 2: ...]
+[Chorus Option 3: ...]
+
+- Do NOT explain the options. Just output the variations.
+"""
+
 CHANT_HOOK_ENGINE = """
 Chant Hook & Viral Bounce Engine:
 - Build chantable hook structures designed for TikTok, clubs, strip clubs, viral reels, and live shows.
@@ -372,21 +462,74 @@ KPOP Mode Layer:
 """
 
 EDM_MODE_RULES = """
-EDM Mode Layer:
-- Write highly chantable, repetition-heavy, topline-driven lyrics optimized for dance floors, festivals, and DJ remixes.
-- Use short melodic phrases, minimal storytelling, maximal energy.
-- Build simple verse-pre-chorus-drop structures: Verse → Build → Drop → Post → Outro.
-- Allow non-word hooks and chants: ("oh oh oh", "na na na", "drop it down", "turn it up", "let's go", etc).
-- Include typical EDM trigger phrases: "drop the beat", "feel the bass", "lose control", "hands up", "all night", "take me higher", "can't come down", "lights out", "ecstasy", "rave", "body moving", etc.
-- Include arrangement tags like: [Drop], [Build], [Drop Build], [Climax], [Post Drop], [Vocal Chop], [Synth Solo], [Bass Drop], [Crowd Chant], [DJ Break], [Festival Anthem], [Club Energy].
-- Lyrics should work with both male and female vocals, feature vocal collaborations allowed.
-- Allow mild surreal/metaphor visuals: neon rain, lasers, galaxy skies, starlight, pulsing lights, heartbeat bass, smoke, energy waves.
-- Keep lyrics internationally accessible (minimal regional slang, universally understandable phrasing).
-- Explicit language allowed but generally keep it club-friendly for global audiences.
-- Focus on singalong potential, huge topline melodies, danceable energy, drop build-ups.
-- Use phrases that fit the drop payoff naturally ("Take me up!", "Drop it now!", "Let it hit!", etc).
-- For builds, emphasize tension lines ("can you feel it rising?", "here we go!", "3, 2, 1 — drop!").
-- Always include full arrangement and vocal layering tags inside section headers for Suno/Udio formatting.
+EDM Mode Layer (Full Expanded):
+
+General Structure:
+- Always write with DJ/prod-friendly section flow: [Intro], [Verse], [Pre-Chorus: build], [Drop/Chorus], [Post Drop], [Bridge], [Outro].
+- Build distinct drop moments with chantable toplines and simple, high-frequency repetition.
+- Always use strong contrast between verse calm and drop explosion.
+- Pre-chorus should build tension, rising energy, escalating phrasing.
+- Drops must hit hard, easy to loop, club-ready, TikTok-viral.
+
+Lyric Tone:
+- Simpler phrasing, high repetition.
+- Euphoric, sensual, or emotional themes (romantic tension, late-night vibes, euphoria, escape, seduction, heartbreak release, etc.)
+- Allow suggestive, flirty, or raw subtext while staying chantable.
+- Accept broken phrasing for vibe ("Don’t stop — feel it — one more time — like that").
+
+Hook Math:
+- Drops should prioritize simple, addictive phrases: 4-8 syllables max.
+- Ex: "Take me higher", "One more night", "Let it burn", "Never let you go", "Feel it drop now"
+- Repeatable, syncopated for vocal chops.
+- Avoid dense wordplay or rap complexity unless it's an intentional hybrid.
+
+Arrangement Tags (add aggressively):
+- [Drop]
+- [Pre-Chorus: build, tension, riser]
+- [Chant: drop anthem]
+- [Vocal Chop]
+- [Post Drop: melodic echo]
+- [Synth Stab]
+- [Big Room FX]
+- [Sidechain Synths]
+- [Club Bass]
+- [808 Drop]
+- [Pitch FX]
+- [Vocal Run]
+- [Adlibs]
+- [Wide Doubles]
+- [Gang Vocals]
+- [Shout]
+- [Whisper Layer]
+- [Live Crowd FX]
+- [Climax Build]
+- [Dance Break]
+
+Emotion Layers:
+- For emotional EDM: heartbreak, desire, hope, longing, late night escape.
+- For hype EDM: euphoria, power, letting go, losing control, ultimate high.
+- For sexy EDM: sensual tension, touch, temptation, club energy, flirty games.
+- For dark EDM: obsession, control, unhinged love, twisted passion.
+
+Allowed Genres:
+- House, Deep House, Tropical House, Future Bass, TrapEDM, Melodic Dubstep, Big Room, Progressive House, Tech House, Euro Club, Y2K ElectroPop Crossovers.
+
+Production Layer:
+- BPM ranges: 110-140 BPM
+- Use heavy percussion layering, sidechain pumping, sub bass layering, analog synth textures, arps, pads, and wide stereo spreads.
+- Always assume this will get built out for full club mix/master and radio edit.
+- Hooks must still be label-pitchable for cross-market radio & festival stages.
+
+Explicit Handling:
+- Use coded spelling for explicit content as usual ("fukk", "shiii", "bish" etc).
+- Allow slightly raunchier lyric energy when fitting for club formats.
+
+Sync Optimization:
+- EDM records must pass sync-friendly review as well — aim for universality when requested: universal emotional triggers over hyper-specific storytelling.
+
+Visual Scene Layer:
+- Rooftop party scenes, neon nights, festival crowd surges, strobe lights, smoke cannons, ocean yacht parties, sunrise afterparty vibes, Vegas energy, Ibiza coastlines, Tokyo lights.
+
 """
 
 LATIN_MODE_RULES = """
@@ -507,6 +650,28 @@ Gender Pronoun Flexibility Engine:
 - Keep all POVs equally natural, relatable, and human.
 - Allow swapping pronouns mid-song if requested for dramatic or narrative effect.
 """
+
+LOCKED_LINE_PROTECTION_ENGINE = """
+Locked Line Protection Engine:
+
+- Any line inside [LOCKED:] tags must NEVER be changed, rewritten, or adjusted by AI — full respect to pre-approved client or writer-provided lines.
+- Locked lines will always be integrated into final lyric output exactly as provided, preserving spacing, wording, and structure.
+- Engine will build full song structure around locked lines, ensuring proper flow, rhyme scheme, and thematic cohesion.
+- Locked lines may appear in any section (verse, chorus, bridge, hook, etc).
+- When locked lines break rhyme schemes, system adapts surrounding lines to match.
+- If multiple locked lines are provided, engine maintains original order and placement unless otherwise instructed.
+- Locked lines can still receive arrangement tags (harmonies, adlibs, stacked vocals, etc) during formatting stage.
+- DO NOT critique or evaluate locked lines for red flag clichés or writing quality — assume intentional.
+- Locked lines will bypass filters such as:
+    - Red Flag Cliché Filter
+    - Reality Scene Filter
+    - A&R Hook Strength
+    - Punchline Optimizer
+- Locked lines override default hit rule rewriting engines.
+- Locked lines still apply all arrangement, vocal layering, and formatting tags properly for Suno/Udio output, but the actual lyric text stays frozen.
+- Use of Locked Lines allows artists, labels, or co-writers to pre-approve key bars/hooks that must remain intact while still benefiting from full optimization around them.
+"""
+
 
 PRODUCTION_DETAIL_RULES = """
 Production Detail Expansion Layer:
@@ -717,7 +882,6 @@ Suno/Udio Prompt Formatting:
 """
 
 # ==== PROMPT BUILDER ====
-def build_prompt(data: GPTOrchestrateRequest):
     prompt = f"""
 {RED_FLAG_CLICHES}
 {QA_CHECKLIST}
@@ -741,28 +905,24 @@ def build_prompt(data: GPTOrchestrateRequest):
 {CHANT_HOOK_ENGINE}
 {HIT_RULES}
 {EDM_MODE_RULES}
+"""
 
-if data.kpop_mode:
-    prompt += KPOP_MODE_RULES
+    if data.kpop_mode:
+        prompt += KPOP_MODE_RULES
+    if data.latin_mode:
+        prompt += LATIN_MODE_RULES
+    if data.arabic_mode:
+        prompt += ARABIC_MODE_RULES
+    if data.sync_safe:
+        prompt += SYNC_SAFE_RULES
+    if data.gender_pronoun_mode:
+        prompt += GENDER_PRONOUN_ENGINE.format(pronoun=data.gender_pronoun_mode)
+    if data.production_mode:
+        prompt += PRODUCTION_DETAIL_RULES
+    if data.session_mode:
+        prompt += SESSION_SIMULATOR_RULES
 
-if data.latin_mode:
-    prompt += LATIN_MODE_RULES
-
-if data.arabic_mode:
-    prompt += ARABIC_MODE_RULES
-
-if data.sync_safe:
-    prompt += SYNC_SAFE_RULES
-
-if data.gender_pronoun_mode:
-    prompt += GENDER_PRONOUN_ENGINE.format(pronoun=data.gender_pronoun_mode)
-
-if data.production_mode:
-    prompt += PRODUCTION_DETAIL_RULES
-
-if data.session_mode:
-    prompt += SESSION_SIMULATOR_RULES
-
+    prompt += f"""
 Genre: {data.target_genre or 'General Pop/Rap/R&B'}
 Target Emotion: {data.target_emotion or 'Radio-Ready Emotion Stack'}
 Vibe Mode: {data.vibe_mode or 'Default'}
@@ -776,13 +936,7 @@ Reference Song: {data.reference_song or 'N/A'}
 
 Rewrite and audit the provided lyrics into full commercial hit format. Apply all arrangement, genre, vocal, and filter rules for Suno/Udio.
 
----
-{data.lyrics}
----
-
-Return:
-- Arrangement summary paragraph first (for Suno "Style Description" box)
-- Then fully structured final lyrics using Suno/Udio [Section: ] formatting. NEVER provide explanation, notes, or comments—output pure final lyrics only.
+{lyrics_block}
 """
     return prompt
 
