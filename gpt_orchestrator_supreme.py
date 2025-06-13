@@ -2,11 +2,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 import openai
+import os
+from dotenv import load_dotenv
 
 app = FastAPI()
 
-# Initialize OpenAI client (new SDK usage)
-client = openai.OpenAI(api_key="YOUR_OPENAI_API_KEY")  # Use env var or secrets manager in production
+# Load environment variables (loads .env file)
+load_dotenv()
+
+# Initialize OpenAI client using env variable
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class SupremeRequest(BaseModel):
     lyrics: str
@@ -75,9 +80,8 @@ DELIVER:
 - A&R hit potential notes
 """
 
-    # This is the new SDK call!
     response = client.chat.completions.create(
-        model="gpt-4o",  # or "gpt-4", "gpt-3.5-turbo", etc.
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": full_prompt}
@@ -87,4 +91,3 @@ DELIVER:
     )
 
     return {"result": response.choices[0].message.content}
-
