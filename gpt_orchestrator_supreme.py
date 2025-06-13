@@ -384,9 +384,12 @@ Vocal Layering & Arrangement Layer:
 
 ARRANGEMENT_RULES = """
 Arrangement & Section Labeling Layer:
-- Label sections with [Chorus:], [Final Chorus:], [Pre-Chorus:], [Post Chorus:], [Verse 2:], [Pre-Chorus 2:], [Outro:], [Bridge:], etc.—all in [brackets], separated by commas, add tags for arrangement/vocal layering/energy/instrumentation as needed.
+- Label sections with [Chorus:], [Final Chorus:], [Pre-Chorus:], [Post Chorus:], [Verse 2:], [Pre-Chorus 2:], [Outro:], [Bridge:], etc.—all in [brackets].
+- All arrangement and performance tags must be included inside the section label’s single brackets, separated by commas. 
+    Example: [Chorus: gang vocals, chant, 808 drop, stacked vocals]
+- Do NOT use nested or double brackets inside a section. Only one set of brackets per section label.
 - Suno/Udio reads everything in [brackets] as the section/arrangement/instrument/vocal tag. Go wild.
-- Add tags like [drop out], [build up], [climax], [stacked vocals], [gang vocals], [harmonies], [adlibs], [vocal run], [background vocals], [doubles], [whisper], [chant], [horns], [guitar solo], [feature: female rap], [vocal chop], [808 drop], [string section], [shout], [call-and-response], [anthemic], [club], [stadium], [live], [crowd].
+- Add tags like gang vocals, chant, harmonies, adlibs, vocal run, etc as needed—just **do not wrap these individual tags in brackets!**
 - Pre-Choruses should be either [drop out, tension] or [build up, tension] for chorus payoff.
 - Verse 1 should be simpler, less layered, more conversational.
 - Verse 2/Pre 2: add harmonies, adlibs, runs, extra backing vocals, more “session” energy.
@@ -408,11 +411,12 @@ Descriptive Arrangement Layer:
 
 SECTION_LABEL_RULES = """
 Section Labeling & Performance Layer:
-- Every [Section:] must include all performance, arrangement, instrument, and energy tags that apply.
+- Every [Section: ...] must include all performance, arrangement, instrument, and energy tags that apply—**inside a single set of brackets, separated by commas.**
+- Do not use nested brackets or wrap tags individually.
 - Parentheses are only for backing vocals/adlibs.
-- If there’s a shout, gang vocal, whisper, chant, call-and-response, group yell, or anything performance-specific, always put it in [brackets].
-- Always use [feature vocal: ...] for featured vocalist type.
-- Always use [vocal chop], [horns], [string section], [808 drop], etc if the vibe/genre calls for it.
+- If there’s a shout, gang vocal, whisper, chant, call-and-response, group yell, or anything performance-specific, always put it in the main section brackets.
+- Always use [feature: ...] for featured vocalist type.
+- Always use [vocal chop], [horns], [string section], [808 drop], etc if the vibe/genre calls for it (but all inside the same brackets as the section label).
 """
 
 PRONUNCIATION_FIX_LAYER = """
@@ -512,6 +516,15 @@ def gpt_orchestrate_supreme(request: GPTOrchestrateRequest):
 
     output = response.choices[0].message.content
     return {"result": output}
+
+import re
+
+def flatten_brackets(text):
+    # Replace nested/double brackets like [[Chorus: ...]] with [Chorus: ...]
+    return re.sub(r'\[\[([^\[\]]+)\]\]', r'[\1]', text)
+
+# ...then after getting output:
+output = flatten_brackets(output)
 
 # ==== NATURAL LANGUAGE SONG GENERATOR ====
 @app.post("/quick_song")
