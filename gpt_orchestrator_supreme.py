@@ -330,6 +330,21 @@ Reality Check & Movie Scene Writing Layer:
 - If a lyric could fit in a thousand other songs, it’s dead on arrival.
 """
 
+CLOTHING_ITEM_VARIATION_RULE = """
+Clothing & Item Variation Rule:
+- Avoid defaulting to "hoodie" as the only personal item referenced.
+- Use a diverse pool of modern, emotionally-charged, and visually descriptive personal items, including but not limited to:
+- t-shirt, sweatshirt, chain, bracelet, necklace, earrings, anklet, watch, ring, hair tie, bobby pin, lipstick, perfume, heels, sneakers, slides, jacket, denim jacket, leather jacket, flannel, bomber, varsity jacket, phone, charger, AirPods, vape, water bottle, tote bag, sunglasses, lingerie (lawnjeray), blanket, t- shirt, pillow, journal, makeup bag.
+- Only introduce personal item references if they elevate the emotional or visual storytelling within the scene.
+- Do NOT include random objects as filler; object mentions must feel natural to the setting, relationship dynamic, and emotional arc.
+- Use object variation to signal relationship history, intimacy, vulnerability, or aftermath — not as cheap props.
+- Avoid repetitive item mentions across multiple songs unless the object holds specific, intentional weight in the scene.
+- Prioritize specificity, relatability, and viral/social language over generic placeholders.
+- If unsure, default to the most emotionally charged and visually cinematic option that fits the lyric's moment.
+- When referencing personal items (clothing, jewelry, objects), always add minimal visual or emotional description to enhance cinematic detail. Example: "your black hoodie", "your favorite leather jacket", "our matching bracelets", "your lipstick-stained t-shirt", etc.
+- Avoid safe generic item drops — prioritize detail that signals emotional attachment, vibe, or character personality.
+"""
+
 EXTRA_WRITING_RULES = """
 Advanced Writing & Structure Rules:
 - Follow all major hit frameworks and top writers/producers as listed in the INFLUENCES section below.
@@ -465,6 +480,7 @@ def build_prompt(data: GPTOrchestrateRequest):
 {HIT_RULES}
 {CONVERSATIONAL_CONFRONTATION_RULES}
 {REALITY_MOVIE_SCENE_RULES}
+{CLOTHING_ITEM_VARIATION_RULE}
 {EXTRA_WRITING_RULES}
 {A_AND_R_RULES}
 {INFLUENCES}
@@ -541,6 +557,7 @@ You are a platinum-level hit songwriter generating a fully original song from na
 {HIT_RULES}
 {CONVERSATIONAL_CONFRONTATION_RULES}
 {REALITY_MOVIE_SCENE_RULES}
+{CLOTHING_ITEM_VARIATION_RULE}
 {EXTRA_WRITING_RULES}
 {A_AND_R_RULES}
 {INFLUENCES}
