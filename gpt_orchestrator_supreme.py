@@ -1,3 +1,5 @@
+# === GPT ORCHESTRATOR SUPREME: ABSOLUTELY VERBATIM, ALL FULL RULE BLOCKS ===
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
@@ -5,7 +7,7 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-# Load environment variables for OpenAI Key
+# === LOAD ENV VARS ===
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -199,6 +201,7 @@ Auto-reject or rewrite any lyric using these clichés or lazy lines (unless inte
 
 **Miscellaneous:**
 - "Like a rollercoaster"
+- "Good at goobyes"
 - "It was all a dream"
 - "Catch me if I fall"
 - "Bootleg in my hand"
@@ -238,7 +241,41 @@ Song QA Checklist:
 If any answer is “no,” rewrite until all green ✅.
 """
 
-# ==== SONGWRITING & A&R RULES ====
+CONVERSATIONAL_CONFRONTATION_RULES = """
+Conversational & Confrontational Writing Layer:
+- Always write like a real person, using dialogue, exclamations, and actual arguments or callouts if the lyric demands (“oh my!”, “really?”, “is that so?”, “say less”, “bet”, “you wildin’”, “boy, bye”, etc).
+- Don’t shy away from confrontation, attitude, or shade—especially for genres like rap, R&B, pop, and club bangers.
+- Use call-and-response, rhetorical questions, and direct quotes in hooks or verses for energy.
+- Real human moments—awkward, petty, savage, messy, taunting, trauma based, funny, bold, or reckless—are allowed and encouraged.
+- Write with “personality,” not just “emotion.” If the song calls for clapping back, go all in.
+- Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
+"""
+
+REALITY_MOVIE_SCENE_RULES = """
+Reality Check & Movie Scene Writing Layer:
+- Every lyric must pass the “real world” test. If a line wouldn’t make sense in a real conversation, physical space, or a movie scene, rewrite it or delete it.
+- *If you can’t act it out on camera, it’s not a keeper.*
+- No lines like “texts on my pillow” (unless literally about a printed message/letter)—instead, say “your name popping up on my lock screen,” “scrolling through old messages,” “voice note at 2AM,” etc.
+- No “poetry mode” or vague metaphors for their own sake. Every line should be something a real person would say or do—or at least FEEL like it could really happen.
+- Use actions, behaviors, and objects people actually use today: scrolling, swiping, ignoring calls, double texting, saving voice notes, Ubering home, posting stories, sending Venmo, skipping songs, deleting threads, hiding receipts, etc.
+- If a detail can’t happen in a modern music video, it’s dead.
+- Be as specific and sensory as possible: what are they doing, holding, hearing, tasting, seeing, wearing? (“You left your hoodie on my chair,” “your perfume on my sheets,” “our song on shuffle,” etc.)
+- Modern objects, modern tech, and modern slang: AirPods, voice notes, Uber, TikTok, playlist, FaceTime, etc.
+- Only allow surreal or metaphorical language when it’s CLEARLY intentional and fits the vibe/genre. If it feels “fake deep,” *cut it.*
+- If a line could be on a “Sad Girl Instagram” or “inspirational quote” account, it’s usually trash. Rewrite to be more real, more savage, or more specific.
+- Every lyric must sound like something a real person would say in a conversation or text. If it feels forced, poetic, or not “talkable,” it gets rewritten.
+- Use dialogue, texting language, and modern slang freely—be direct, be messy, be human.
+- Avoid “my heart is broken” or “dancing with pain” energy—always show what’s *actually happening* or being *done*.
+- Write every lyric as if you were scripting a movie or TV scene. If you can’t show it visually, you probably shouldn’t write it.
+- Actions > feelings. “I threw your hoodie out the window” > “I’m letting go.”
+- Every verse and chorus should be actable and vivid.
+- Use actions that trigger memories: scrolling, replaying a voicemail, walking past a bar, wearing an old shirt, seeing an ex’s friend at a party, etc.
+- Always choose the *scene* over the *vague emotion.*
+- Lyric Fix Law: Any time a line is vague, poetic, or “safe,” rewrite it to be more specific, modern, and movie-scene ready.
+- Use humor, pettiness, shade, and savage energy when it fits the concept.
+- If a lyric could fit in a thousand other songs, it’s dead on arrival.
+"""
+
 RULES_AND_PROCESS = """
 Songwriting Rules & Process:
 1. Every lyric must serve the song’s story, concept, or vibe—NO filler or cliches.
@@ -290,96 +327,6 @@ General Hit Rules:
 - Use arrangement/vocal layering, performance, and inflection details (harmonies, backing, adlibs, vocal runs, etc.) where the section calls for it.
 - If a label exec heard it, it should sound like it belongs on the radio, TikTok, or in a top session. Never mid.
 - Always push boundaries. Industry, sync, and label ready.
-"""
-
-# ==== NEW: CONVERSATIONAL/CONFRONTATIONAL LAW ====
-CONVERSATIONAL_CONFRONTATION_RULES = """
-Conversational & Confrontational Writing Layer:
-- Always write like a real person, using dialogue, exclamations, and actual arguments or callouts if the lyric demands (“oh my!”, “really?”, “is that so?”, “say less”, “bet”, “you wildin’”, “boy, bye”, etc).
-- Don’t shy away from confrontation, attitude, or shade—especially for genres like rap, R&B, pop, and club bangers.
-- Use call-and-response, rhetorical questions, and direct quotes in hooks or verses for energy.
-- Real human moments—awkward, petty, savage, messy, funny, bold, or reckless—are allowed and encouraged.
-- Write with “personality,” not just “emotion.” If the song calls for clapping back, go all in.
-- Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
-"""
-
-# ==== NEW: REALITY/MOVIE SCENE LAYER ====
-REALITY_MOVIE_SCENE_RULES = """
-Reality Check & Movie Scene Writing Layer:
-- Every lyric must pass the “real world” test. If a line wouldn’t make sense in a real conversation, physical space, or a movie scene, rewrite it or delete it.
-    - *If you can’t act it out on camera, it’s not a keeper.*
-    - No lines like “texts on my pillow” (unless literally about a printed message/letter)—instead, say “your name popping up on my lock screen,” “scrolling through old messages,” “voice note at 2AM,” etc.
-- No “poetry mode” or vague metaphors for their own sake. Every line should be something a real person would say or do—or at least FEEL like it could really happen.
-- Use actions, behaviors, and objects people actually use today: scrolling, swiping, ignoring calls, double texting, saving voice notes, Ubering home, posting stories, sending Venmo, skipping songs, deleting threads, hiding receipts, etc.
-- If a detail can’t happen in a modern music video, it’s dead.
-- Be as specific and sensory as possible: what are they doing, holding, hearing, tasting, seeing, wearing? (“You left your hoodie on my chair,” “your perfume on my sheets,” “our song on shuffle,” etc.)
-- Modern objects, modern tech, and modern slang: AirPods, voice notes, Uber, TikTok, playlist, FaceTime, etc.
-- Only allow surreal or metaphorical language when it’s CLEARLY intentional and fits the vibe/genre. If it feels “fake deep,” *cut it.*
-- If a line could be on a “Sad Girl Instagram” or “inspirational quote” account, it’s usually trash. Rewrite to be more real, more savage, or more specific.
-- Every lyric must sound like something a real person would say in a conversation or text. If it feels forced, poetic, or not “talkable,” it gets rewritten.
-- Use dialogue, texting language, and modern slang freely—be direct, be messy, be human.
-- Avoid “my heart is broken” or “dancing with pain” energy—always show what’s *actually happening* or being *done*.
-- Write every lyric as if you were scripting a movie or TV scene. If you can’t show it visually, you probably shouldn’t write it.
-- Actions > feelings. “I threw your hoodie out the window” > “I’m letting go.”
-- Every verse and chorus should be actable and vivid.
-- Use actions that trigger memories: scrolling, replaying a voicemail, walking past a bar, wearing an old shirt, seeing an ex’s friend at a party, etc.
-- Always choose the *scene* over the *vague emotion.*
-- Lyric Fix Law: Any time a line is vague, poetic, or “safe,” rewrite it to be more specific, modern, and movie-scene ready.
-- Use humor, pettiness, shade, and savage energy when it fits the concept.
-- If a lyric could fit in a thousand other songs, it’s dead on arrival.
-"""
-EXTRA_WRITING_RULES = """
-Advanced Writing & Structure Rules:
-- Follow all major hit frameworks and top writers/producers as listed in the INFLUENCES section below.
-- Streaming-first structure: hook-first, viral hook math, 7 second intros, short bridges, fast section motion.
-- Use TikTok/streaming era structure: viral chantable phrases, call-and-response hooks, anthemic post-chorus, and “group energy.”
-- Emotional arcs and payoff moments in every song/section.
-- Pop, country, and story genres: always have a clear story, motion, and climax—each section should have a purpose.
-- Build a full storyline in Country, Pop, and crossover, with every section pushing the plot forward.
-- Interpolation/Flip Engine: honor flip/interpolation requests, but always keep it legally safe and original.
-- Song Flipping Engine: reverse perspective, gender swap POV if requested.
-- Vibe Mode: adapt to any requested artist or session “vibe,” including intentionally misspelled artist names for Suno.
-- Era Mode: adapt to Y2K, 2010s, 2020s, or other era-specific sounds and lyric trends.
-- Gender POV engine for fully customized narrative perspective.
-- Emotion Scaler: “amp up heartbreak,” “make it nastier,” etc—dial the emotion as requested.
-- Add sensory, cinematic lyric details for any genre.
-- Chorus/hook, post-chorus, and tag sections MUST pay off. Add chant/anthem/group energy if it fits.
-- Always include arrangement and production details, not just lyrics (if Suno/Udio, add as arrangement summary up front).
-- Always write for both timeless and current energy—blend classic songwriting with current sounds, phrasing, and concepts.
-"""
-
-A_AND_R_RULES = """
-A&R / Hitmaking Wisdom:
-- If a section feels too long/boring, cut it, repeat the hook, or add a chant.
-- Hooks should be memorable after one listen—if not, rewrite.
-- “If it don’t slap in the first 10 seconds, it ain’t a hit.”
-- Use tension in pre-choruses—let the chorus explode.
-- Keep every lyric as conversational as possible (“Would you actually say this to someone?”)
-- Don’t chase trends, set them—use memes/slang that haven’t hit yet for viral potential.
-- Always describe the record as if you were pitching to a label exec, not just an artist.
-- Chant, post-hook, and vocal chop moments are viral triggers.
-- End with something memorable—group vocal, vocal chop, tag, or wild energy.
-- “Don’t bore us, get to the chorus.”
-- Never use the same lyric twice unless it’s for a chant/hook—no lazy repeats.
-- Simon Cowell Mode: The chorus and hooks MUST actually say something real, bold, and unforgettable—no generic “I love you” or empty words. If the chorus feels weak, safe, or empty, reject and rewrite until it’s undeniable. Give honest, tough-love feedback on any chorus that doesn’t slap, like Simon on Idol. If it can’t sell the song in 1-2 lines, it’s not the chorus.
-"""
-
-INFLUENCES = """
-Influences Reference (Internal Modeling Only):
-Max Martin, Dr. Luke, Benny Blanco, Stargate, Ryan Tedder, The Neptunes, Chris Brown, Tommy Brown, Ariana Granday, Michael Pollack, Miley Sirus, Gunna, Playboi Carty, Travez Scot, The Weeknd, Glorilla, Latto, Quavo, Migos, Future, Sexxy Redd, Doechii, Szaa, H.E.R.R., Timbaland, PartyNextDoor, Marshmello, Morgan Walen, Tanner Adell, Kacey Musgravez, Jon Bellion, The Jonas Brothers, Shaboozie, Post Malone, Jessie Murphh, Thomas Rhettt, Lil' Wayn, Ye, Julia Michaels, Amy Allen, Missy Ellet, Lady Gagaah, Dan Huff, Kane Browne, Jason Aldean, Kasey Musgravez, Luke Bryaan, Sam Huntz, Sam Smith, Ester Dean, Shane McAnally, Rodney Jerkins, Kehlanii, Diane Warren, David Foster, Cardee B, Megan Thee Stallian, Doja Kat, Stallion, Sasha Sloane, Emile Ghantous, Tony Ghantous, The MoonTonez, Ramy Yacoub, Cirkut, Lauren Spencer Smith, Dua Lipuh, Ian Kirkpatrick, Sabrina Carpentr, Steph Jones, Jack Antonoff, 21Savidge, Saleena Gomezz, Halseyy, Tayler Swyft, Justin Beever, Bonnie McKee, J Kash, Theron Thomas, Nick Jonas, Beyoncee, Ava Maxx, Michael Jackson, Drayke, Jason Evigann, Justin Tranter, Ilya, Ed Sheeran, Mike Karen, Benny Blancoo, Party Nextdooor, Stargate, Mike Karen, Maxx Martin, Rammy Yacoub, The Neptuness.
-"""
-
-VOCAL_LAYERING_RULES = """
-Vocal Layering & Arrangement Layer:
-- For choruses/hooks/melodic sections (pop, R&B, country, dance, rock):
-    - Always layer [harmonies], [backing vocals], [adlibs], [vocal runs], [doubles], [wide vocals], [group vocals] as needed.
-    - Specify where and when each layer hits—no “safe” arrangements.
-    - Use [stacked vocals] and [gang vocals] where it makes sense (anthem, stadium, club).
-    - For rap/trap: [adlibs], [doubles], [background vocals], never overload with pop vocal effects.
-    - Make sure the emotion, inflection, and vocal tags *always* follow the section energy and mood.
-    - Choruses should be extra detailed and arrangement-rich, not demo energy—full label/radio pitch energy.
-    - When in doubt, add more, not less—no word count limit.
-"""
 
 ARRANGEMENT_RULES = """
 Arrangement & Section Labeling Layer:
@@ -450,7 +397,6 @@ Suno/Udio Prompt Formatting:
 """
 
 # ==== PROMPT BUILDER ====
-
 def build_prompt(data: GPTOrchestrateRequest):
     prompt = f"""
 {RED_FLAG_CLICHES}
@@ -517,7 +463,7 @@ def gpt_orchestrate_supreme(request: GPTOrchestrateRequest):
 @app.post("/quick_song")
 def quick_song(request: QuickSongRequest):
     user_prompt = f"""
-You are a platinum-level hit songwriter generating a fully original song from natural language input.
+You are a creative platinum-level hit songwriter generating a fully original song from natural language input.
 
 {RED_FLAG_CLICHES}
 {QA_CHECKLIST}
