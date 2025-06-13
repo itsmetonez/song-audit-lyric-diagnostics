@@ -3,13 +3,11 @@ from pydantic import BaseModel
 from typing import Optional
 import openai
 
-# Initialize FastAPI
 app = FastAPI()
 
-# Load your OpenAI API key
-openai.api_key = "YOUR_OPENAI_API_KEY"
+# Initialize OpenAI client (new SDK usage)
+client = openai.OpenAI(api_key="YOUR_OPENAI_API_KEY")  # Use env var or secrets manager in production
 
-# Schema aligned to your OpenAPI spec
 class SupremeRequest(BaseModel):
     lyrics: str
     reference_song: Optional[str] = None
@@ -18,7 +16,6 @@ class SupremeRequest(BaseModel):
     optimize_hood_bars: Optional[bool] = False
     target_genre: Optional[str] = None
 
-# Core influence injection logic
 INFLUENCE_BLOCK = """
 You're a highly advanced hit songwriter AI that combines the writing styles, structures, and hit-making formulas used by:
 - Max Martin (pop math, melodic contour, sticky hooks)
@@ -44,11 +41,8 @@ Rules:
 - Always sound fully human, industry competitive.
 """
 
-# Supreme Orchestrator Endpoint
 @app.post("/gpt_orchestrate_supreme")
 async def gpt_orchestrate_supreme(request: SupremeRequest):
-    
-    # Build system prompt dynamically
     system_prompt = INFLUENCE_BLOCK
 
     if request.reference_song:
@@ -65,8 +59,7 @@ async def gpt_orchestrate_supreme(request: SupremeRequest):
 
     if request.optimize_hood_bars:
         system_prompt += "\nIncorporate authentic street vernacular where appropriate."
-    
-    # Build the full user task
+
     full_prompt = f"""
 {system_prompt}
 
@@ -82,9 +75,9 @@ DELIVER:
 - A&R hit potential notes
 """
 
-    # Call OpenAI
-    response = openai.ChatCompletion.create(
-        model="gpt-4o",  # or whichever model you prefer
+    # This is the new SDK call!
+    response = client.chat.completions.create(
+        model="gpt-4o",  # or "gpt-4", "gpt-3.5-turbo", etc.
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": full_prompt}
@@ -93,4 +86,5 @@ DELIVER:
         max_tokens=1500
     )
 
-    return {"result": response.choices[0].message['content']}
+    return {"result": response.choices[0].message.content}
+
