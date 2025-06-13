@@ -100,12 +100,12 @@ async def gpt_orchestrate_supreme(request: SupremeRequest):
         system_prompt += "\nApply advanced punchline optimization for rap."
     if request.optimize_hood_bars:
         system_prompt += "\nIncorporate authentic street vernacular where appropriate."
-        if request.explicit:
+    
+    # ALWAYS force explicit/uncensored lyrics in prompt (for max savage, can toggle this logic)
     system_prompt += (
         "\nDo NOT censor explicit language, profanity, or adult content. "
         "Write lyrics with authentic, uncensored, raw human language—profanity and sexual references are fully allowed and should match real-world rap/hip-hop songwriting."
     )
-
 
     full_prompt = f"""
 {system_prompt}
@@ -145,7 +145,6 @@ DELIVER:
         print("Supreme Endpoint Error:", e)
         return {"error": f"Backend Error: {str(e)}"}
 
-
 # QUICK SESSION NATURAL LANGUAGE PARSER ENDPOINT
 @app.post("/quick_song")
 async def quick_song(request: Request):
@@ -178,7 +177,8 @@ User request: {raw_prompt}
     parsed.setdefault("optimize_rap_punchlines", False)
     parsed.setdefault("optimize_hood_bars", False)
     parsed.setdefault("mode", "rewrite")
+    # Explicit mode always on for now:
+    parsed["explicit"] = True
 
     response = await gpt_orchestrate_supreme(SupremeRequest(**parsed))
     return response
-
