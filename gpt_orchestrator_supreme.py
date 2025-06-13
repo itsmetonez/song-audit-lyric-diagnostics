@@ -123,18 +123,21 @@ DELIVER:
 - Viral writing analysis
 - Suno/Udio arrangement fully embedded
 """
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": full_prompt}
+            ],
+            temperature=0.85,
+            max_tokens=1500
+        )
+        return {"result": response.choices[0].message.content}
+    except Exception as e:
+        print("Supreme Endpoint Error:", e)
+        return {"error": f"Backend Error: {str(e)}"}
 
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": full_prompt}
-        ],
-        temperature=0.85,
-        max_tokens=1500
-    )
-
-    return {"result": response.choices[0].message.content}
 
 # QUICK SESSION NATURAL LANGUAGE PARSER ENDPOINT
 @app.post("/quick_song")
