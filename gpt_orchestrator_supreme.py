@@ -2,88 +2,95 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 import openai
-import os
-import logging
-
-# Load your OpenAI API Key from environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialize FastAPI
 app = FastAPI()
-logging.basicConfig(level=logging.INFO)
 
-# Request Schema (same as GPT Builder Action schema)
+# Load your OpenAI API key
+openai.api_key = "YOUR_OPENAI_API_KEY"
+
+# Schema aligned to your OpenAPI spec
 class SupremeRequest(BaseModel):
     lyrics: str
-    reference_song: Optional[str] = ""
-    target_emotion: Optional[str] = ""
-    optimize_rap_punchlines: Optional[bool] = True  # Always ON
-    optimize_hood_bars: Optional[bool] = True       # Always ON
-    target_genre: Optional[str] = ""
+    reference_song: Optional[str] = None
+    target_emotion: Optional[str] = None
+    optimize_rap_punchlines: Optional[bool] = False
+    optimize_hood_bars: Optional[bool] = False
+    target_genre: Optional[str] = None
 
-# Main Orchestrator Endpoint
+# Core influence injection logic
+INFLUENCE_BLOCK = """
+You're a highly advanced hit songwriter AI that combines the writing styles, structures, and hit-making formulas used by:
+- Max Martin (pop math, melodic contour, sticky hooks)
+- Dr. Luke (hook precision and radio structure)
+- Benny Blanco (conversational lyrical tone)
+- Stargate (modern R&B topline finesse)
+- The Neptunes & Timbaland (groove-driven pocket writing)
+- PartyNextDoor (melodic street pop & emotional trap-soul)
+- Julia Michaels & Amy Allen (lyrical intimacy, metaphor layering)
+- Bonnie McKee (anthemic pop punchlines)
+- J Kash & Theron Thomas (hit songwriting formulas across formats)
+- Drake (conversational flex bars, punchlines, melody-rap fusion)
+
+Rules:
+- Write natural, modern, highly conversational lyrics
+- Avoid generic phrases; always seek unique metaphors
+- Prioritize strong opening bars/hooks
+- Vary rhythmic phrasing
+- Allow explicit language when stylistically appropriate
+- Use real hit songwriting techniques, not robotic safe writing
+- Follow narrative or emotional arcs where applicable
+- Maintain genre appropriateness for provided target genre
+- Always sound fully human, industry competitive.
+"""
+
+# Supreme Orchestrator Endpoint
 @app.post("/gpt_orchestrate_supreme")
 async def gpt_orchestrate_supreme(request: SupremeRequest):
-    logging.info("Incoming orchestration request: %s", request.dict())
-
-    # Master Hitmaker Brain Logic Prompt (always-on)
-    system_prompt = f"""
-    You are Song Audit GPT Supreme — an elite A&R, hitmaker, producer, songwriter, sync strategist, viral song doctor, and full co-writer.
-
-    You permanently apply expert writing logic from:
-    Max Martin, Mike Caren, Dr. Luke, Benny Blanco, Julia Michaels, Justin Tranter, Ryan Tedder, Savan Kotecha, Shellback, Noah "40" Shebib, Tainy, The-Dream, Timbaland, The Neptunes, Amy Allen, Bonnie McKee, Stargate, PARTYNEXTDOOR, Drake, Theron Thomas, J Kash.
-
-    ALWAYS execute the following hitmaker rules:
-    - Streaming-first viral structure (hook-first, 7-sec rule, early payoff, short bridges)
-    - Conversational emotional lyric phrasing (Julia Michaels / Amy Allen style)
-    - Metaphorical & descriptive storytelling in all verses (no generic AI filler)
-    - Strong storyline arcs with conflict, twists, and emotional release
-    - Song Math hook symmetry (4/8 bar structures)
-    - Rap punchlines ON: flex bars, double entendres, clever flips, multi-syllable rhymes
-    - Hood mode ON: street language, toxic flex, explicit club phrasing, authentic slang
-    - Sync licensing safety review
-    - Streaming replay optimization (TikTok, Spotify, Apple, YouTube)
-    - Producer arrangement recommendations
-    - Viral replay structures (title loops, earworms)
-    - Always avoid generic robotic AI writing.
-    - Always write like a highly trained hit songwriter.
     
-    INPUT LYRICS: {request.lyrics}
-    REFERENCE SONG (if provided): {request.reference_song}
-    TARGET EMOTION (if provided): {request.target_emotion}
-    TARGET GENRE (if provided): {request.target_genre}
+    # Build system prompt dynamically
+    system_prompt = INFLUENCE_BLOCK
 
-    Execute full creative orchestration:
-    1. Audit song structure & lyrics.
-    2. Rate commercial potential (1-100).
-    3. Suggest 3-5 rewrite improvements.
-    4. Strengthen hooks & viral replay phrases.
-    5. Optimize verses.
-    6. Suggest title alternatives.
-    7. Deliver full production arrangement notes.
-    8. Provide sync licensing & label-readiness notes.
-    """
+    if request.reference_song:
+        system_prompt += f"\nReference Song Influence: {request.reference_song}."
 
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Run full orchestration."}
-            ],
-            temperature=0.7,
-            max_tokens=1800,
-            timeout=60
-        )
+    if request.target_emotion:
+        system_prompt += f"\nPrimary Emotion: {request.target_emotion}."
 
-        output = response["choices"][0]["message"]["content"]
-        return {"orchestration_feedback": output}
+    if request.target_genre:
+        system_prompt += f"\nGenre Target: {request.target_genre}."
 
-    except Exception as e:
-        logging.error("Error during orchestration: %s", e)
-        return {"error": str(e)}
+    if request.optimize_rap_punchlines:
+        system_prompt += "\nApply enhanced punchline optimization for rap formats."
 
-# Health Check (optional)
-@app.get("/healthcheck")
-def healthcheck():
-    return {"status": "Supreme Beast 6.0 Orchestrator Online."}
+    if request.optimize_hood_bars:
+        system_prompt += "\nIncorporate authentic street vernacular where appropriate."
+    
+    # Build the full user task
+    full_prompt = f"""
+{system_prompt}
+
+TASK:
+Rewrite, optimize and fully enhance the following lyrics:
+
+{request.lyrics}
+
+DELIVER:
+- Rewrite
+- Section-by-section feedback
+- Hook upgrade if applicable
+- A&R hit potential notes
+"""
+
+    # Call OpenAI
+    response = openai.ChatCompletion.create(
+        model="gpt-4o",  # or whichever model you prefer
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": full_prompt}
+        ],
+        temperature=0.85,
+        max_tokens=1500
+    )
+
+    return {"result": response.choices[0].message['content']}
