@@ -882,7 +882,14 @@ Suno/Udio Prompt Formatting:
 """
 
 # ==== PROMPT BUILDER ====
-prompt = f"""
+def build_prompt(data: GPTOrchestrateRequest):
+    # Handle locked lines logic up front
+    if data.locked_lines:
+        lyrics_block = apply_locked_line_protection(data.lyrics, data.locked_lines)
+    else:
+        lyrics_block = data.lyrics
+
+    prompt = f"""
 {RED_FLAG_CLICHES}
 {QA_CHECKLIST}
 {RULES_AND_PROCESS}
@@ -907,6 +914,7 @@ prompt = f"""
 {EDM_MODE_RULES}
 """
 
+    # Add modes if enabled
     if data.kpop_mode:
         prompt += KPOP_MODE_RULES
     if data.latin_mode:
@@ -938,7 +946,9 @@ Rewrite and audit the provided lyrics into full commercial hit format. Apply all
 
 {lyrics_block}
 """
+
     return prompt
+
 
 # ==== MAIN ORCHESTRATOR ENDPOINT ====
 @app.post("/gpt_orchestrate_supreme")
@@ -1010,7 +1020,7 @@ Generate full commercial hit song using [Section: ] format with proper Suno/Udio
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.88,
-        max_tokens=3000
+        max_tokens=4000
     )
 
     output = response.choices[0].message.content
