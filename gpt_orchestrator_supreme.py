@@ -1,14 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import Optional
 import openai
 import os
 import requests
+import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
-
-# Load OpenAI key securely from environment variables
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class SupremeRequest(BaseModel):
     lyrics: str
@@ -17,113 +21,82 @@ class SupremeRequest(BaseModel):
     optimize_rap_punchlines: Optional[bool] = False
     optimize_hood_bars: Optional[bool] = False
     target_genre: Optional[str] = None
-    mode: Optional[str] = "rewrite"  # rewrite or session_ideas
+    mode: Optional[str] = "rewrite"
 
-# FULL SUPREME 8.0 HYBRID INFLUENCE BLOCK:
 INFLUENCE_BLOCK = """
-You're a fully hybridized AI songwriting brain combining rule-based audit data with GPT-4o orchestration.
+You're a highly advanced hit songwriter AI that combines the writing styles, structures, and hit-making formulas used by:
+- Max Martin, Dr. Luke, Benny Blanco, Stargate, The Neptunes, Timbaland, PartyNextDoor, Julia Michaels, Amy Allen, Bonnie McKee, J Kash, Theron Thomas, Drake
 
-Your creative DNA includes:
-- Max Martin (melodic math, payoff structure, hook anchoring)
-- Dr. Luke (precision pop writing)
-- Benny Blanco (conversational intimacy)
-- Stargate (topline R&B smoothness)
-- Timbaland & Neptunes (groove-driven rhythmic pockets)
-- PartyNextDoor (melodic trap soul)
-- Julia Michaels & Amy Allen (emotional metaphor writing)
-- Bonnie McKee (anthemic hooks)
-- J Kash & Theron Thomas (genre-blending hitmaking)
-- Drake (melody-rap hybrid, punchlines)
-- Mike Caren (commercial A&R filter, streaming-first structure)
-- Justin Tranter & Leland (lyrical vulnerability and depth)
-- Noah “40” Shebib (vocal pocketing, space for production)
-- The Stereotypes (modern R&B groove syncopation)
-- Nashville country storytelling & payoff writing
+General Hit Rules:
+- Write natural, modern, highly conversational lyrics
+- Use Human Like Emotions
+- Remember to use subtext
+- Avoid generic phrases, always seek unique metaphors
+- Prioritize strong opening bars/hooks
+- Use real hit songwriting techniques, not robotic safe writing
+- Use profanity if provided, censor automatically if necessary for API compliance
+- Write Explicit Lyrics for Rap, R&B, and Hip Hop like human rappers do in real songwriting.
+- Use Profanity in Rap Lyrics like humans do in real songwriting.
+- Use sexual references, metaphors, and innuendo like humans do in real songwriting.
+- Write using slang when it fits the lyric
+- Always sound fully human, industry competitive
+- Theme writing, so there is an over all theme to the song
+- Always try and be descriptive 
+- Have a story line for Country and pop Songs
+- Don't use word association just to fill a lyric
+- Use Similes like humans do
+- No forced rhyme, no textbook English—sound like real people, not a robot or a poet.
+- Every lyric should feel like it actually hurts, loves, celebrates, or lusts. If it wouldn’t make someone feel something, rewrite it.
+- Don’t say everything directly—layer meanings, hide intentions, use “read between the lines” writing like real hits do.
+- If you’ve heard it a million times (“broken heart,” “fly away”), it’s dead. Go deeper, find new angles.
+- The first line, first word—hit hard, hook fast. Make listeners lean in instantly.
+- Dynamic structures, call-and-response, unexpected rhyme flips, melodic bait—study the best and write with real-world tricks.
+- Keep the edge—curse like a real songwriter if that’s the vibe, but clean it for external services as needed.
+- Don’t hold back—say it raw, punchy, clever, and bold when the genre calls for it.
+- Match the genre—if it needs to slap with cuss words, make it authentic.
+- Be clever, suggestive, cheeky, or straight-up direct. Never forced or awkward, always read-the-room energy.
+- Be regional, be generational, be current—use the words people actually say.
+- If a label exec heard it, it should sound like it belongs on the radio or in a top session.
+- No random bars or scattered ideas—tie everything to one emotional or narrative thread.
+- Paint pictures, use senses, put the listener in the scene. “Show, don’t tell” but keep it clear.
+- Every verse moves the plot, every chorus nails the emotional core. If it could be a movie scene, you’re on track.
+- No lazy “this rhymes with that” writing—if it doesn’t add meaning, cut it.
+- Clever, unexpected, and fresh comparisons (“like a record spinning out,” not “like the sun in the sky”).
+- Push Boundaries
 
-You always:
-- Avoid clichés using rule-based flags.
-- Eliminate repetition detected by audit data.
-- Remove filler words identified upfront.
-- Rewrite rhyme traps flagged by audit.
-- Build emotional payoff hooks.
-- Use streaming-first commercial structure.
-- Avoid generic writing at all times.
-- Allow explicit lyric language when artistically appropriate.
-- Optimize for Suno/Udio formatting.
+Suno/Udio Advanced Prompt Formatting:
+- Use [Section: description, description, description] structure
+- Include vocal production tags: stacked vocals, backing vocals, harmonies, adlibs, vocal runs
+- For rap: always include adlibs (hype adlibs, background shouts, etc)
+- For pop/R&B: include harmonies,backing vocals, stacked vocals, vocal runs in the chorus and post chorus
+- NO artist names or copyrighted melody references
+- Follow rules from: https://howtopromptsuno.com and Travis Nicholson’s Suno guide https://travisnicholson.medium.com/complete-list-of-prompts-styles-for-suno-ai-music-2024-33ecee85f180
 
-Suno/Udio Formatting Rules:
-- Use [Section, descriptor, descriptor, descriptor...] tags.
-- Inside tags: 3-10 words, arrangement, vocal, production cues.
-- Use commas, no parentheses.
-- Include: ad libs, harmonies, backing vocals, vocal runs, stacked vocals.
-- Always number sections properly: Verse 1, Pre-Chorus 1, Chorus 1, etc.
-- Never use artist names in output.
-- Reference arrangement vocab from https://howtopromptsuno.com and https://travisnicholson.medium.com/complete-list-of-prompts-styles-for-suno-ai-music-2024-33ecee85f180
+Other writing rules:
+- Always include payoff moments and emotional arcs
+- Storylines for narrative genres (pop, country, etc)
+- Human Like Emotions 
+- Use descriptive words like humans do in real song writing.
+- Use Slang
+- Think in feeling and Emotions and not Like and LLM 
+- Think about Subtext in the section and overall song
+- Make sure Lyrics stick to the subject matter and theme
+- Streaming-first structure, viral hooks, chantability
+- Label-ready arrangements, strong commercial payoff
 """
 
 @app.post("/gpt_orchestrate_supreme")
 async def gpt_orchestrate_supreme(request: SupremeRequest):
-
-    # SESSION IDEA GENERATOR MODE:
-    if request.mode == "session_ideas":
-        idea_prompt = f"""
-You are a top-level commercial songwriter preparing a session.
-
-TASK:
-- Generate 3 fully cuttable session song ideas.
-- Each idea includes:
-    1️⃣ Title
-    2️⃣ Hook Concept (payoff)
-    3️⃣ Storyline (brief 1-2 sentence narrative)
-    4️⃣ Production/Vibe Description
-
-Use full A&R-level writing logic.
-
-Genre Target: {request.target_genre or 'Pop/Rap/R&B/Trap'}
-Reference Song: {request.reference_song or 'N/A'}
-Primary Emotion: {request.target_emotion or 'N/A'}
-
-Avoid clichés. Deliver highly commercial industry-level ideas.
-"""
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are an elite A&R and hit songwriter."},
-                {"role": "user", "content": idea_prompt}
-            ],
-            temperature=0.85,
-            max_tokens=1500
-        )
-        return {"result": response.choices[0].message.content}
-
-    # FIRST — AUTO CALL YOUR RULE-BASED FULL AUDIT SYSTEM:
-    try:
-        audit_response = requests.post(
-            "http://localhost:8000/full_audit",
-            json={"lyrics": request.lyrics},
-            timeout=30
-        )
-        audit_data = audit_response.json()
-    except Exception as e:
-        audit_data = {"error": f"Audit system call failed: {e}"}
-
-    # SYSTEM PROMPT ASSEMBLY WITH AUDIT DATA INJECTION:
     system_prompt = INFLUENCE_BLOCK
-
-    system_prompt += f"\nRule-Based Audit Findings: {audit_data}"
 
     if request.reference_song:
         system_prompt += f"\nReference Song Influence: {request.reference_song}."
-
     if request.target_emotion:
         system_prompt += f"\nPrimary Emotion: {request.target_emotion}."
-
     if request.target_genre:
         system_prompt += f"\nGenre Target: {request.target_genre}."
-
     if request.optimize_rap_punchlines:
-        system_prompt += "\nApply advanced rap punchline optimization."
-
+        system_prompt += "\nApply advanced punchline optimization for rap."
     if request.optimize_hood_bars:
         system_prompt += "\nIncorporate authentic street vernacular where appropriate."
 
@@ -131,26 +104,24 @@ Avoid clichés. Deliver highly commercial industry-level ideas.
 {system_prompt}
 
 TASK:
-Rewrite, optimize, and fully enhance these lyrics for Suno/Udio and commercial release.
+Rewrite, optimize, and format these lyrics for full Suno/Udio commercial arrangement:
+- Use proper [Section: Description] structure
+- Add arrangement, vocal production, and section markers
+- Use stacked vocals, harmonies, vocal runs, adlibs as needed
+- Make every section market ready
+- Avoid generic language and weak filler bars
 
-FORMAT:
-- Use [Section, descriptor, descriptor...] tags as described.
-- Fully structure with numbered sections: Verse 1, Pre-Chorus 1, Chorus 1, Verse 2, Bridge, Chorus 2, Final Hook, Outro.
-- Include vocal & production arrangement inside brackets: ad libs, harmonies, vocal stacks, runs, backing vocals, etc.
-- Maximize commercial payoff hooks.
-- Deliver clear story arc in lyrics.
-- DO NOT include artist names in output.
-
-Here are the lyrics to rewrite:
+Apply this to the following lyrics:
 
 {request.lyrics}
 
 DELIVER:
-- Full rewritten lyrics with Suno/Udio structure
+- Full rewrite with [Section: Description] tags
 - Section-by-section feedback
-- Hook upgrade suggestions
-- Hit potential commercial notes
-- Suno/Udio style description summary for upload
+- Hook upgrade if applicable
+- A&R hit potential notes
+- Viral writing analysis
+- Suno/Udio arrangement fully embedded
 """
 
     response = client.chat.completions.create(
@@ -159,8 +130,45 @@ DELIVER:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": full_prompt}
         ],
-        temperature=0.88,
-        max_tokens=2500
+        temperature=0.85,
+        max_tokens=1500
     )
 
     return {"result": response.choices[0].message.content}
+
+# QUICK SESSION NATURAL LANGUAGE PARSER ENDPOINT
+@app.post("/quick_song")
+async def quick_song(request: Request):
+    data = await request.json()
+    raw_prompt = data.get("prompt")
+    if not raw_prompt:
+        return {"error": "No prompt provided."}
+
+    parse_prompt = f"""
+Given the following user request for a song, extract:
+- reference song
+- genre (if mentioned)
+- target emotion or vibe
+- rewrite theme or lyric request
+Return as JSON with keys: reference_song, target_genre, target_emotion, lyrics.
+User request: {raw_prompt}
+"""
+
+    parse = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": parse_prompt}],
+        temperature=0.0,
+        max_tokens=300,
+        response_format={"type": "json_object"}
+    )
+
+    parsed = parse.choices[0].message.content
+    parsed = json.loads(parsed)
+
+    parsed.setdefault("optimize_rap_punchlines", False)
+    parsed.setdefault("optimize_hood_bars", False)
+    parsed.setdefault("mode", "rewrite")
+
+    response = await gpt_orchestrate_supreme(SupremeRequest(**parsed))
+    return response
+
