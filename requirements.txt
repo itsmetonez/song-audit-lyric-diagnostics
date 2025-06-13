@@ -1,6 +1,6 @@
 fastapi
 uvicorn
 pydantic
-openai==1.14.3
+openai>=1.14.0
 requests
 python-dotenv
