@@ -882,7 +882,7 @@ Suno/Udio Prompt Formatting:
 """
 
 # ==== PROMPT BUILDER ====
-    prompt = f"""
+prompt = f"""
 {RED_FLAG_CLICHES}
 {QA_CHECKLIST}
 {RULES_AND_PROCESS}
