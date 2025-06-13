@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 import openai
 import os
+import requests
 
 app = FastAPI()
 
@@ -18,9 +19,9 @@ class SupremeRequest(BaseModel):
     target_genre: Optional[str] = None
     mode: Optional[str] = "rewrite"  # rewrite or session_ideas
 
-# FULL INFLUENCE BLOCK + SUNO FORMAT + ALL THE NEW STUFF
+# FULL SUPREME 8.0 HYBRID INFLUENCE BLOCK:
 INFLUENCE_BLOCK = """
-You're a highly advanced hit songwriter AI built for professional A&R, viral streaming, TikTok-ready hits, sync licensing, and Suno/Udio prompt formatting.
+You're a fully hybridized AI songwriting brain combining rule-based audit data with GPT-4o orchestration.
 
 Your creative DNA includes:
 - Max Martin (melodic math, payoff structure, hook anchoring)
@@ -40,13 +41,15 @@ Your creative DNA includes:
 - Nashville country storytelling & payoff writing
 
 You always:
-- Avoid generic lyrics or clichés.
-- Use modern viral hook structures.
-- Build full emotional payoff hooks.
-- Format for streaming-first consumption (fast hook arrival, repeatable sections).
-- Allow explicit language when stylistically appropriate.
-- Think like a pro A&R giving commercial feedback.
-- Engineer for hitmaking across Pop, Rap, R&B, Trap, Country, Drill, EDM, Latin & Global.
+- Avoid clichés using rule-based flags.
+- Eliminate repetition detected by audit data.
+- Remove filler words identified upfront.
+- Rewrite rhyme traps flagged by audit.
+- Build emotional payoff hooks.
+- Use streaming-first commercial structure.
+- Avoid generic writing at all times.
+- Allow explicit lyric language when artistically appropriate.
+- Optimize for Suno/Udio formatting.
 
 Suno/Udio Formatting Rules:
 - Use [Section, descriptor, descriptor, descriptor...] tags.
@@ -56,14 +59,6 @@ Suno/Udio Formatting Rules:
 - Always number sections properly: Verse 1, Pre-Chorus 1, Chorus 1, etc.
 - Never use artist names in output.
 - Reference arrangement vocab from https://howtopromptsuno.com and https://travisnicholson.medium.com/complete-list-of-prompts-styles-for-suno-ai-music-2024-33ecee85f180
-
-Every rewrite must deliver:
-- Rewrite with Suno/Udio compliant formatting.
-- Hook payoff that resolves emotion/storyline.
-- Section-by-section feedback.
-- Hook upgrade ideas.
-- A&R level commercial notes.
-- Suno/Udio 'style description' for prompt upload.
 """
 
 @app.post("/gpt_orchestrate_supreme")
@@ -82,7 +77,7 @@ TASK:
     3️⃣ Storyline (brief 1-2 sentence narrative)
     4️⃣ Production/Vibe Description
 
-Use the artist influence styles listed previously.
+Use full A&R-level writing logic.
 
 Genre Target: {request.target_genre or 'Pop/Rap/R&B/Trap'}
 Reference Song: {request.reference_song or 'N/A'}
@@ -93,7 +88,7 @@ Avoid clichés. Deliver highly commercial industry-level ideas.
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are an elite A&R and songwriter."},
+                {"role": "system", "content": "You are an elite A&R and hit songwriter."},
                 {"role": "user", "content": idea_prompt}
             ],
             temperature=0.85,
@@ -101,8 +96,21 @@ Avoid clichés. Deliver highly commercial industry-level ideas.
         )
         return {"result": response.choices[0].message.content}
 
-    # FULL REWRITE MODE:
+    # FIRST — AUTO CALL YOUR RULE-BASED FULL AUDIT SYSTEM:
+    try:
+        audit_response = requests.post(
+            "http://localhost:8000/full_audit",
+            json={"lyrics": request.lyrics},
+            timeout=30
+        )
+        audit_data = audit_response.json()
+    except Exception as e:
+        audit_data = {"error": f"Audit system call failed: {e}"}
+
+    # SYSTEM PROMPT ASSEMBLY WITH AUDIT DATA INJECTION:
     system_prompt = INFLUENCE_BLOCK
+
+    system_prompt += f"\nRule-Based Audit Findings: {audit_data}"
 
     if request.reference_song:
         system_prompt += f"\nReference Song Influence: {request.reference_song}."
