@@ -294,10 +294,12 @@ General Hit Rules:
 - Write song lyrics not poetry
 - Every verse moves the plot, every chorus nails the emotional core. If it could be a movie scene, you’re on track.
 - Hooks/choruses must say something real, bold, or unforgettable—no empty “I love you” or cliché energy.
-- For rap, trap, rage, club, or viral/strip club bangers: simple, chantable, repetitive hooks (ex: “Shake dat ass, bitch, and lemme see what you got” x4, “Let’s go!” x3, “Run it up!” etc.) are not just allowed, they’re a strength. Don’t overcomplicate. Simplicity + repetition = anthem.
-- Dynamic section structures: call-and-response, surprise rhymes, melodic bait, chant moments.
+- For rap, trap, rage, strip club bangers, viral TikTok baits: simple, chantable, repetitive hooks (ex: “Shake dat ass, bitch, and lemme see what you got” x4, “Let’s go!” x3, “Run it up!” etc.) are not just allowed, they’re a *requirement* in these styles.
+- Simplicity + repetition = anthem. Short chant hooks, turn-up phrases, call-and-response bangers allowed.
+- Explicit strip club, nightlife, bottle service, club-ready energy fully supported when genre appropriate.
+- Dynamic section structures: call-and-response, surprise rhymes, melodic bait, chant moments, viral trigger phrases.
 - Use arrangement/vocal layering, performance, and inflection details (harmonies, backing, adlibs, vocal runs, etc.) where the section calls for it.
-- If a label exec heard it, it should sound like it belongs on the radio, TikTok, or in a top session. Never mid.
+- If a label exec heard it, it should sound like it belongs on the radio, TikTok, viral club, or sync — never mid.
 - Always push boundaries. Industry, sync, and label ready.
 """
 
@@ -309,6 +311,32 @@ Conversational & Confrontational Writing Layer:
 - Real human moments—awkward, petty, savage, messy, funny, bold, or reckless—are allowed and encouraged.
 - Write with “personality,” not just “emotion.” If the song calls for clapping back, go all in.
 - Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
+"""
+
+CHANT_HOOK_ENGINE = """
+Chant Hook & Viral Bounce Engine:
+- Build chantable hook structures designed for TikTok, clubs, strip clubs, viral reels, and live shows.
+- Hooks must be extremely repetitive, easy to memorize, and addictive after one listen.
+- Use simple, short phrases: 3-6 words per chant line.
+- Allow repetition: up to 2-4 times per chant section ("Drop it low!", "Run it up!", "Let’s go!", "Shake that ass!" etc).
+- Include "bounce" words to create rhythm: woah, ay, yeah, okay, huh, uh, oh, let’s go, turn up.
+- Allow non-word hooks (na na na, la la la, ay ay ay) for bounce feel.
+- Embed call-and-response energy ("You know what?!" — "Yeah!"; "Say it!" — "Say what?!" etc).
+- Use percussive phonetics: hard consonant sounds for bounce (clap, snap, drop, pop, hit, run, shake, bounce, slide, ride).
+- Allow group yell energy: [crowd chant], [club chant], [strip club chant], [viral chant].
+- Allow stacking: [gang vocals], [chant], [call-and-response], [shout], [group yell] inside section labels.
+- Explicit allowed but always export-coded (fukk, bish, shiii, nuggah, beetch).
+- Build the chant hook to land after chorus OR as part of post-chorus drop.
+- Always write for DJ drop potential and twerk anthem bounce when genre fits.
+- For rage, club, trap, twerk, drill, urban pop, and viral bangers: simplicity wins. Minimal lyrics, maximum bounce.
+- Add physical body movement energy triggers ("drop it low", "throw it back", "make it clap", "ride it", "twerk it", "bust it", "spin it", "shake it").
+- For viral hooks: allow meme phrasing, TikTok trends, slang adaptation.
+- Allow phrasing flipped for gender POV, regional dialect, or slang stack.
+- Hooks can function as both callout & response ("Who bad?!" — "I’m bad!").
+- Chants MUST prioritize beat-riding phrasing: percussive over poetic.
+- Allow intentional off-beat stabs and syncopation.
+- Design hooks for clip looping: no storylines, all energy.
+- Avoid long sentences or storytelling — chant hooks = pure bounce utility.
 """
 
 KPOP_MODE_RULES = """
@@ -341,6 +369,24 @@ KPOP Mode Layer:
 - Ensure high replay value, catchy chant points, dance section triggers, viral TikTok bait.
 - Write for idol group performance visuals — camera-ready scenes.
 - Hooks must be MASSIVE — addictive melodies, chantable hooks, cinematic arrangement.
+"""
+
+EDM_MODE_RULES = """
+EDM Mode Layer:
+- Write highly chantable, repetition-heavy, topline-driven lyrics optimized for dance floors, festivals, and DJ remixes.
+- Use short melodic phrases, minimal storytelling, maximal energy.
+- Build simple verse-pre-chorus-drop structures: Verse → Build → Drop → Post → Outro.
+- Allow non-word hooks and chants: ("oh oh oh", "na na na", "drop it down", "turn it up", "let's go", etc).
+- Include typical EDM trigger phrases: "drop the beat", "feel the bass", "lose control", "hands up", "all night", "take me higher", "can't come down", "lights out", "ecstasy", "rave", "body moving", etc.
+- Include arrangement tags like: [Drop], [Build], [Drop Build], [Climax], [Post Drop], [Vocal Chop], [Synth Solo], [Bass Drop], [Crowd Chant], [DJ Break], [Festival Anthem], [Club Energy].
+- Lyrics should work with both male and female vocals, feature vocal collaborations allowed.
+- Allow mild surreal/metaphor visuals: neon rain, lasers, galaxy skies, starlight, pulsing lights, heartbeat bass, smoke, energy waves.
+- Keep lyrics internationally accessible (minimal regional slang, universally understandable phrasing).
+- Explicit language allowed but generally keep it club-friendly for global audiences.
+- Focus on singalong potential, huge topline melodies, danceable energy, drop build-ups.
+- Use phrases that fit the drop payoff naturally ("Take me up!", "Drop it now!", "Let it hit!", etc).
+- For builds, emphasize tension lines ("can you feel it rising?", "here we go!", "3, 2, 1 — drop!").
+- Always include full arrangement and vocal layering tags inside section headers for Suno/Udio formatting.
 """
 
 LATIN_MODE_RULES = """
@@ -692,6 +738,9 @@ def build_prompt(data: GPTOrchestrateRequest):
 {MICRO_SYMBOLS_RULES}
 {SUNO_META_SYMBOLS}
 {SUNO_FORMAT_GUIDE}
+{CHANT_HOOK_ENGINE}
+{HIT_RULES}
+{EDM_MODE_RULES}
 
 if data.kpop_mode:
     prompt += KPOP_MODE_RULES
@@ -790,6 +839,9 @@ You are a platinum-level hit songwriter generating a fully original song from na
 {MICRO_SYMBOLS_RULES}
 {SUNO_META_SYMBOLS}
 {SUNO_FORMAT_GUIDE}
+{CHANT_HOOK_ENGINE}
+{HIT_RULES}
+{EDM_MODE_RULES}
 
 User Request: 
 {request.prompt}
