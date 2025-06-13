@@ -3,14 +3,10 @@ from pydantic import BaseModel
 from typing import Optional
 import openai
 import os
-from dotenv import load_dotenv
 
 app = FastAPI()
 
-# Load environment variables (loads .env file)
-load_dotenv()
-
-# Initialize OpenAI client using env variable
+# Initialize OpenAI client using environment variable
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class SupremeRequest(BaseModel):
