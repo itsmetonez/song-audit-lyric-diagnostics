@@ -4,6 +4,7 @@ from typing import Optional
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import re
 
 # === LOAD ENV VARS ===
 load_dotenv()
@@ -396,6 +397,7 @@ Arrangement & Section Labeling Layer:
 - Final chorus and post-chorus are always the climax: most arrangement, energy, and layers.
 - Every section should have arrangement and vocal tags that follow the emotion and storyline.
 - Write a one-paragraph arrangement summary before the lyrics describing the whole arc.
+- For choruses specifically: ALWAYS include at least **8 descriptive tags** inside the bracket to fully capture chorus energy.
 """
 
 DESCRIPTIVE_ARRANGEMENT_RULES = """
@@ -411,7 +413,7 @@ Descriptive Arrangement Layer:
 
 SECTION_LABEL_RULES = """
 Section Labeling & Performance Layer:
-- Every [Section: ...] must include all performance, arrangement, instrument, and energy tags that apply—**inside a single set of brackets, separated by commas.**
+- Every [Section: ...] must include all performance, arrangement, instrument, and energy tags that apply, use atleast 5—**inside a single set of brackets, separated by commas.**
 - Do not use nested brackets or wrap tags individually.
 - Parentheses are only for backing vocals/adlibs.
 - If there’s a shout, gang vocal, whisper, chant, call-and-response, group yell, or anything performance-specific, always put it in the main section brackets.
@@ -447,7 +449,7 @@ SUNO_FORMAT_GUIDE = """
 Suno/Udio Prompt Formatting:
 - Use [Section: ...] labels (ex: [Verse 1: emotional, sensual, conversational])
 - Insert all Suno tags directly before target word: [vocal run] word, [adlibs], [harmonies], [stacked vocals], [backing vocals], [gang vocals], [chant], [yell], [whisper], [horns], [guitar solo], [feature: female rap], [vocal chop], [808 drop], [string section].
-- Parentheses = backing/adlib vocals only.
+- Parentheses = backing vocals/adlibs only.
 - No artist name or copyrighted melody references.
 - Follow Travis Nicholson + HowToPromptSuno advanced writing structures.
 - Reference: https://howtopromptsuno.com
@@ -515,16 +517,17 @@ def gpt_orchestrate_supreme(request: GPTOrchestrateRequest):
     )
 
     output = response.choices[0].message.content
+
+    # Clean nested brackets before returning
+    output = flatten_brackets(output)
+
     return {"result": output}
 
+# ==== BRACKET FIX ====
 import re
 
 def flatten_brackets(text):
-    # Replace nested/double brackets like [[Chorus: ...]] with [Chorus: ...]
     return re.sub(r'\[\[([^\[\]]+)\]\]', r'[\1]', text)
-
-# ...then after getting output:
-output = flatten_brackets(output)
 
 # ==== NATURAL LANGUAGE SONG GENERATOR ====
 @app.post("/quick_song")
@@ -568,4 +571,8 @@ Generate full commercial hit song using [Section: ] format with proper Suno/Udio
     )
 
     output = response.choices[0].message.content
+
+    # Clean nested brackets before returning
+    output = flatten_brackets(output)
+
     return {"result": output}
