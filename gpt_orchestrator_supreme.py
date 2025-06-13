@@ -29,8 +29,216 @@ class GPTOrchestrateRequest(BaseModel):
 class QuickSongRequest(BaseModel):
     prompt: str
 
-# ==== SONGWRITING & A&R RULES ====
+# ==== RED FLAG CLICHES & QA ====
+RED_FLAG_CLICHES = """
+Red Flag Cliché & Lazy Line Filter:
+Auto-reject or rewrite any lyric using these clichés or lazy lines (unless intentionally flipped/ironic). If a line reads like a meme, motivational quote, Instagram caption, 2000s pop song, AI-generated Suno lyric, or high school poetry—NUKE IT.
 
+**Relationships/Love/Breakups:**
+- "You broke my heart"
+- "Can't live without you"
+- "Love is my drug"
+- "You complete me"
+- "Stuck on you"
+- "Tearing me apart"
+- "We're worlds apart"
+- "It's not you, it's me"
+- "You’re my better half"
+- "One in a million"
+- "Meant to be"
+- "We were never meant to be"
+- "Love is blind"
+- "Love conquers all"
+- "My heart is yours"
+- "You stole my heart"
+- "Heart on my sleeve"
+- "Torn in two"
+- "Falling for you"
+- "Head over heels"
+- "Hopeless romantic"
+- "Swept off my feet"
+- "If you love something set it free"
+- "Soulmate"
+- "I still love you"
+- "Still holding on"
+- "Moving on"
+- "Can’t let go"
+- "Left in the dark"
+- "Empty inside"
+- "I miss you like crazy"
+- "Tears fall down"
+- "Crying in the rain"
+- "Since you’ve been gone"
+
+**Night/Party/Escape:**
+- "Dance the night away"
+- "All night long"
+- "Under the stars"
+- "Chasing dreams"
+- "Light up the night"
+- "Let’s get this party started"
+- "We gonna party all night"
+- "Neon lights"
+- "Let the music play"
+- "Burning up the dance floor"
+- "Like there’s no tomorrow"
+- "Living for the weekend"
+- "Turn up the music"
+- "DJ, play my song"
+- "Lost in the moment"
+- "Dancing till the sunrise"
+
+**Motivation/Inspiration:**
+- "Time flies"
+- "What doesn’t kill me makes me stronger"
+- "Keep on fighting"
+- "I will survive"
+- "Never give up"
+- "Rising from the ashes"
+- "Against all odds"
+- "Stand my ground"
+- "Nothing can stop me now"
+- "Unbreakable"
+- "Stronger than ever"
+- "I was born to (win/fly/shine/etc)"
+- "Spread my wings"
+- "Take it to the next level"
+- "Chasing my dreams"
+- "Sky’s the limit"
+- "Reach for the stars"
+- "Rise above"
+- "This is my moment"
+- "Follow my heart"
+- "Believe in yourself"
+- "Living my best life"
+
+**Pain/Emotions/Drama:**
+- "Cuts like a knife"
+- "Cold as ice"
+- "Empty streets"
+- "Broken chains"
+- "Fading away"
+- "On my knees"
+- "Broken record"
+- "Deafening silence"
+- "Echoes in my mind"
+- "Lost without you"
+- "Screaming inside"
+- "I’m only human"
+- "My demons"
+- "Haunted by the past"
+- "Shadows on the wall"
+- "Drowning in my tears"
+- "Burning bridges"
+
+**Generic Bars/AI Cheese:**
+- "I don’t chase, I replace"
+- "You did me wrong"
+- "They gonna hate"
+- "Fake friends"
+- "Haters gonna hate"
+- "Real recognize real"
+- "Stay in your lane"
+- "It is what it is"
+- "Keep it 100"
+- "Trust nobody"
+- "Too blessed to be stressed"
+- "Living rent free"
+- "Main character energy"
+- "Not like the other girls"
+- "Diamond in the rough"
+- "My own worst enemy"
+- "Living in your head"
+- "Level up"
+- "Turn the page"
+- "Next chapter"
+
+**Overused Rhymes:**
+- love/above
+- heart/apart
+- girl/world
+- hand/understand
+- life/wife
+- fire/desire
+- real/deal
+- pain/rain
+- fight/night
+- run/gun
+- ride/die
+- play/day
+- eyes/cry
+
+**Rap/Trap/TikTok clichés:**
+- "Run it up"
+- "Get that bag"
+- "Money on my mind"
+- "Flexin’ on my ex"
+- "On my grind"
+- "Drip too hard"
+- "Ice on my wrist"
+- "Diamonds dancing"
+- "Woke up like this"
+- "Chasing the bag"
+- "Counting bands"
+- "Stacking paper"
+- "Boss up"
+- "No cap"
+- "VVS"
+- "Pop out"
+- "Pull up"
+- "Whole lotta"
+- "Like a boss"
+- "Finesse"
+- "Plug"
+- "In my zone"
+- "From the bottom now we here"
+- "Making moves"
+- "Savage mode"
+- "Trap house"
+- "Stay woke"
+
+**Miscellaneous:**
+- "Like a rollercoaster"
+- "It was all a dream"
+- "Catch me if I fall"
+- "Bootleg in my hand"
+- "Blinded by the light"
+- "Walking on sunshine"
+- "Sunshine after rain"
+- "Heaven sent"
+- "Angel in disguise"
+- "Through thick and thin"
+- "Once in a lifetime"
+- "Better late than never"
+- "All that glitters isn’t gold"
+- "Back against the wall"
+- "Moving mountains"
+- "Against the world"
+- "Fight for your love"
+- "Written in the stars"
+- "Not over you"
+- "Turning the page"
+- "Brand new day"
+
+**Instant Red Flag:**
+- If a line reads like a Hallmark card, IG caption, AI prompt meme, or pop song from a karaoke book, REWRITE it until it’s something only *your* crew would say. If you’ve heard it 1,000 times before, kill it.
+"""
+
+QA_CHECKLIST = """
+Song QA Checklist:
+- Is every lyric specific, sensory, and unique (no clichés)?
+- Does the chorus hit real and memorable—no empty sentiment?
+- Are melody/punchlines top 5% level?
+- Does vibe match target artist/genre/era?
+- Are arrangements and [Section:] tags detailed & needed?
+- Would a label exec or TikTok listener stop scrolling for this?
+- Are harmonies/adlibs/crowd vocals layered where it counts?
+- Are locked lines protected correctly?
+- Are hooks/punchlines/chants strong for TikTok virality?
+If any answer is “no,” rewrite until all green ✅.
+"""
+
+# ==== SONGWRITING & A&R RULES ====
 RULES_AND_PROCESS = """
 Songwriting Rules & Process:
 1. Every lyric must serve the song’s story, concept, or vibe—NO filler or cliches.
@@ -84,6 +292,42 @@ General Hit Rules:
 - Always push boundaries. Industry, sync, and label ready.
 """
 
+# ==== NEW: CONVERSATIONAL/CONFRONTATIONAL LAW ====
+CONVERSATIONAL_CONFRONTATION_RULES = """
+Conversational & Confrontational Writing Layer:
+- Always write like a real person, using dialogue, exclamations, and actual arguments or callouts if the lyric demands (“oh my!”, “really?”, “is that so?”, “say less”, “bet”, “you wildin’”, “boy, bye”, etc).
+- Don’t shy away from confrontation, attitude, or shade—especially for genres like rap, R&B, pop, and club bangers.
+- Use call-and-response, rhetorical questions, and direct quotes in hooks or verses for energy.
+- Real human moments—awkward, petty, savage, messy, funny, bold, or reckless—are allowed and encouraged.
+- Write with “personality,” not just “emotion.” If the song calls for clapping back, go all in.
+- Every chorus, verse, or bridge can use callouts, arguments, and conversational interruptions (“oh, for real?”, “say it again!”, “I wish you would...”, etc).
+"""
+
+# ==== NEW: REALITY/MOVIE SCENE LAYER ====
+REALITY_MOVIE_SCENE_RULES = """
+Reality Check & Movie Scene Writing Layer:
+- Every lyric must pass the “real world” test. If a line wouldn’t make sense in a real conversation, physical space, or a movie scene, rewrite it or delete it.
+    - *If you can’t act it out on camera, it’s not a keeper.*
+    - No lines like “texts on my pillow” (unless literally about a printed message/letter)—instead, say “your name popping up on my lock screen,” “scrolling through old messages,” “voice note at 2AM,” etc.
+- No “poetry mode” or vague metaphors for their own sake. Every line should be something a real person would say or do—or at least FEEL like it could really happen.
+- Use actions, behaviors, and objects people actually use today: scrolling, swiping, ignoring calls, double texting, saving voice notes, Ubering home, posting stories, sending Venmo, skipping songs, deleting threads, hiding receipts, etc.
+- If a detail can’t happen in a modern music video, it’s dead.
+- Be as specific and sensory as possible: what are they doing, holding, hearing, tasting, seeing, wearing? (“You left your hoodie on my chair,” “your perfume on my sheets,” “our song on shuffle,” etc.)
+- Modern objects, modern tech, and modern slang: AirPods, voice notes, Uber, TikTok, playlist, FaceTime, etc.
+- Only allow surreal or metaphorical language when it’s CLEARLY intentional and fits the vibe/genre. If it feels “fake deep,” *cut it.*
+- If a line could be on a “Sad Girl Instagram” or “inspirational quote” account, it’s usually trash. Rewrite to be more real, more savage, or more specific.
+- Every lyric must sound like something a real person would say in a conversation or text. If it feels forced, poetic, or not “talkable,” it gets rewritten.
+- Use dialogue, texting language, and modern slang freely—be direct, be messy, be human.
+- Avoid “my heart is broken” or “dancing with pain” energy—always show what’s *actually happening* or being *done*.
+- Write every lyric as if you were scripting a movie or TV scene. If you can’t show it visually, you probably shouldn’t write it.
+- Actions > feelings. “I threw your hoodie out the window” > “I’m letting go.”
+- Every verse and chorus should be actable and vivid.
+- Use actions that trigger memories: scrolling, replaying a voicemail, walking past a bar, wearing an old shirt, seeing an ex’s friend at a party, etc.
+- Always choose the *scene* over the *vague emotion.*
+- Lyric Fix Law: Any time a line is vague, poetic, or “safe,” rewrite it to be more specific, modern, and movie-scene ready.
+- Use humor, pettiness, shade, and savage energy when it fits the concept.
+- If a lyric could fit in a thousand other songs, it’s dead on arrival.
+"""
 EXTRA_WRITING_RULES = """
 Advanced Writing & Structure Rules:
 - Follow all major hit frameworks and top writers/producers as listed in the INFLUENCES section below.
@@ -124,8 +368,6 @@ INFLUENCES = """
 Influences Reference (Internal Modeling Only):
 Max Martin, Dr. Luke, Benny Blanco, Stargate, Ryan Tedder, The Neptunes, Chris Brown, Tommy Brown, Ariana Granday, Michael Pollack, Miley Sirus, Gunna, Playboi Carty, Travez Scot, The Weeknd, Glorilla, Latto, Quavo, Migos, Future, Sexxy Redd, Doechii, Szaa, H.E.R.R., Timbaland, PartyNextDoor, Marshmello, Morgan Walen, Tanner Adell, Kacey Musgravez, Jon Bellion, The Jonas Brothers, Shaboozie, Post Malone, Jessie Murphh, Thomas Rhettt, Lil' Wayn, Ye, Julia Michaels, Amy Allen, Missy Ellet, Lady Gagaah, Dan Huff, Kane Browne, Jason Aldean, Kasey Musgravez, Luke Bryaan, Sam Huntz, Sam Smith, Ester Dean, Shane McAnally, Rodney Jerkins, Kehlanii, Diane Warren, David Foster, Cardee B, Megan Thee Stallian, Doja Kat, Stallion, Sasha Sloane, Emile Ghantous, Tony Ghantous, The MoonTonez, Ramy Yacoub, Cirkut, Lauren Spencer Smith, Dua Lipuh, Ian Kirkpatrick, Sabrina Carpentr, Steph Jones, Jack Antonoff, 21Savidge, Saleena Gomezz, Halseyy, Tayler Swyft, Justin Beever, Bonnie McKee, J Kash, Theron Thomas, Nick Jonas, Beyoncee, Ava Maxx, Michael Jackson, Drayke, Jason Evigann, Justin Tranter, Ilya, Ed Sheeran, Mike Karen, Benny Blancoo, Party Nextdooor, Stargate, Mike Karen, Maxx Martin, Rammy Yacoub, The Neptuness.
 """
-
-# ==== SUNO / ARRANGEMENT / LAYERING RULES ====
 
 VOCAL_LAYERING_RULES = """
 Vocal Layering & Arrangement Layer:
@@ -211,8 +453,12 @@ Suno/Udio Prompt Formatting:
 
 def build_prompt(data: GPTOrchestrateRequest):
     prompt = f"""
+{RED_FLAG_CLICHES}
+{QA_CHECKLIST}
 {RULES_AND_PROCESS}
 {HIT_RULES}
+{CONVERSATIONAL_CONFRONTATION_RULES}
+{REALITY_MOVIE_SCENE_RULES}
 {EXTRA_WRITING_RULES}
 {A_AND_R_RULES}
 {INFLUENCES}
@@ -273,8 +519,12 @@ def quick_song(request: QuickSongRequest):
     user_prompt = f"""
 You are a platinum-level hit songwriter generating a fully original song from natural language input.
 
+{RED_FLAG_CLICHES}
+{QA_CHECKLIST}
 {RULES_AND_PROCESS}
 {HIT_RULES}
+{CONVERSATIONAL_CONFRONTATION_RULES}
+{REALITY_MOVIE_SCENE_RULES}
 {EXTRA_WRITING_RULES}
 {A_AND_R_RULES}
 {INFLUENCES}
