@@ -138,7 +138,7 @@ DELIVER:
                 {"role": "user", "content": full_prompt}
             ],
             temperature=0.85,
-            max_tokens=1500
+            max_tokens=1200
         )
         return {"result": response.choices[0].message.content}
     except Exception as e:
